@@ -322,8 +322,8 @@ SQLALCHEMY_ECHO = True  # 显示SQL语句
 
 ## 联系方式
 
-- 项目主页: [GitHub Repository]
-- 问题反馈: [GitHub Issues]
+- 项目主页: [GitHub Repository](https://github.com/Howell-Shinji/NeoCTF.git)
+- 问题反馈: [GitHub Issues](https://github.com/Howell-Shinji/NeoCTF/issues)
 - 邮箱: Howell-Bear@outlook.com
 
 ## 更新日志
