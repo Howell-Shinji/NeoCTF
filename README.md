@@ -1,6 +1,13 @@
 # Neon CTF Platform
 
 一个基于Flask的现代化CTF（Capture The Flag）竞赛平台，采用了霓虹夜主题的界面设计，集成了AI安全助手功能。
+<div align="center">
+  <img src="https://img.shields.io/badge/Platform-CTF-blueviolet?style=for-the-badge" alt="CTF Platform">
+  <img src="https://img.shields.io/badge/Theme-Tokyo%20Night-7aa2f7?style=for-the-badge" alt="Tokyo Night">
+  <img src="https://img.shields.io/badge/Backend-Flask-green?style=for-the-badge" alt="Flask">
+  <img src="https://img.shields.io/badge/Database-MySQL-orange?style=for-the-badge" alt="MySQL">
+  <img src="https://img.shields.io/badge/Style-霓虹风-ff69b4?style=for-the-badge" alt="Neon Pixel Style">
+</div>
 
 ## 功能特性
 
@@ -39,23 +46,22 @@
 - **Redis**: 缓存和会话存储（可选）
 
 ### AI集成
-- **OpenAI API**: 支持多种AI模型
-- **DeepSeek API**: 国产AI模型支持
-- **Qwen API**: 通义千问模型
-- **本地模型**: 支持本地部署的AI模型
+- **DeepSeek API**: DeepSeek模型支持
+- **Qwen API**: 通义千问模型支持
+- **本地模型**: 支持本地部署的AI模型（推荐使用Im-studio）
+- **局域网模型**: 支持局域网内AI模型部署
 
 ## 安装部署
 
 ### 环境要求
 - Python 3.8+
 - MySQL 8.0+
-- Redis 6.0+（可选）
 
 ### 快速安装
 
 1. **克隆项目**
 ```bash
-git clone <repository-url>
+git clone https://github.com/Howell-Shinji/NeoCTF.git
 cd ctf-platform
 ```
 
@@ -66,6 +72,7 @@ source venv/bin/activate  # Linux/Mac
 # 或
 venv\Scripts\activate     # Windows
 ```
+或使用conda
 
 3. **安装依赖**
 ```bash
@@ -101,6 +108,137 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
+## AI模型配置
+
+### 支持的AI模型
+
+#### 本地模型（推荐使用Im-studio）
+- **Qwen3.0-Local** (默认)
+- **Deepseek-R1-Local**
+- **Qwen2.5-VL-Local** (视觉增强版)
+- **Qwen2.5-Omni-Local** (全能版)
+- **Gemma3-Local**
+
+#### 局域网模型
+- **Qwen3.0-LAN**
+- **Deepseek-R1-LAN**
+- **Qwen2.5-VL-LAN**
+- **Qwen2.5-Omni-LAN**
+- **Gemma3-LAN**
+
+#### 在线API
+- **通义千问API**
+- **DeepSeek API**
+- **其他支持的AI服务商API**
+
+### 本地AI部署（Im-studio）
+
+#### 1. 安装Im-studio
+
+```bash
+# 下载并安装Im-studio
+curl -fsSL https://install.im-studio.com | bash
+
+# 或手动下载
+wget https://github.com/im-studio/releases/latest/download/im-studio-linux-amd64.tar.gz
+tar -xzf im-studio-linux-amd64.tar.gz
+sudo mv im-studio /usr/local/bin/
+```
+
+#### 2. 启动本地模型服务
+
+```bash
+# 启动Qwen3.0模型（默认）
+im-studio start qwen3.0 --port 1234
+
+# 启动Deepseek-R1模型
+im-studio start deepseek-r1 --port 1235
+
+# 启动Qwen2.5视觉增强版
+im-studio start qwen2.5-vl --port 1236
+
+# 启动Qwen2.5全能版
+im-studio start qwen2.5-omni --port 1237
+
+# 启动Gemma3模型
+im-studio start gemma3 --port 1238
+```
+
+#### 3. 配置本地模型URL
+
+在 `.env` 文件中配置本地模型服务URL：
+
+```env
+# 本地模型URL（根据实际端口配置）
+LOCAL_QWEN3_URL=http://127.0.0.1:1234/v1/chat/completions
+LOCAL_DEEPSEEK_R1_URL=http://127.0.0.1:1235/v1/chat/completions
+LOCAL_QWEN25_VL_URL=http://127.0.0.1:1236/v1/chat/completions
+LOCAL_QWEN25_OMNI_URL=http://127.0.0.1:1237/v1/chat/completions
+LOCAL_GEMMA3_URL=http://127.0.0.1:1238/v1/chat/completions
+```
+
+### 局域网AI部署
+
+#### 1. 局域网环境配置
+
+```bash
+# 在局域网服务器上启动模型服务
+# 假设服务器IP为192.168.1.108
+im-studio start qwen3.0 --host 0.0.0.0 --port 1234
+
+# 确保防火墙允许相关端口
+sudo ufw allow 1234
+sudo ufw allow 1235
+sudo ufw allow 1236
+sudo ufw allow 1237
+sudo ufw allow 1238
+```
+
+#### 2. 配置局域网模型URL
+
+在 `.env` 文件中配置局域网模型服务URL：
+
+```env
+# 局域网模型URL（根据实际IP和端口配置）
+LAN_QWEN3_URL=http://192.168.1.108:1234/v1/chat/completions
+LAN_DEEPSEEK_R1_URL=http://192.168.1.108:1235/v1/chat/completions
+LAN_QWEN25_VL_URL=http://192.168.1.108:1236/v1/chat/completions
+LAN_QWEN25_OMNI_URL=http://192.168.1.108:1237/v1/chat/completions
+LAN_GEMMA3_URL=http://192.168.1.108:1238/v1/chat/completions
+```
+
+### 在线API配置
+
+#### 1. 获取API密钥
+
+##### 通义千问API
+1. 访问 [阿里云控制台](https://dashscope.console.aliyun.com/)
+2. 开通通义千问服务
+3. 获取API密钥
+
+##### DeepSeek API
+1. 访问 [DeepSeek开放平台](https://platform.deepseek.com/)
+2. 注册账号并充值
+3. 获取API密钥
+
+#### 2. 配置API密钥
+
+在 `.env` 文件中配置API密钥：
+
+```env
+# 通义千问API
+QWEN_API_KEY=your_qwen_api_key
+QWEN_API_URL=https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation
+
+# DeepSeek API
+DEEPSEEK_API_KEY=your_deepseek_api_key
+DEEPSEEK_API_URL=https://api.deepseek.com/chat/completions
+
+# 其他API配置
+# OPENAI_API_KEY=your_openai_api_key
+# CLAUDE_API_KEY=your_claude_api_key
+```
+
 ## 配置说明
 
 ### 基础配置
@@ -120,22 +258,11 @@ SECRET_KEY = 'your-secret-key-here'
 # 文件上传配置
 UPLOAD_FOLDER = 'uploads'
 MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB
-```
 
-### AI功能配置
-
-在 `.env` 文件中配置AI API密钥：
-
-```env
-# DeepSeek API
-DEEPSEEK_API_KEY=your_deepseek_api_key
-
-# Qwen API
-QWEN_API_KEY=your_qwen_api_key
-
-# 本地模型URL
-LOCAL_MODEL_URL=http://127.0.0.1:1234/v1/chat/completions
-LAN_MODEL_URL=http://192.168.1.108:1234/v1/chat/completions
+# AI模型配置
+DEFAULT_AI_MODEL = 'Qwen3.0-Local'  # 默认使用本地Qwen3.0模型
+AI_REQUEST_TIMEOUT = 30  # AI请求超时时间（秒）
+AI_MAX_RETRIES = 3  # AI请求最大重试次数
 ```
 
 ## 使用指南
@@ -146,19 +273,26 @@ LAN_MODEL_URL=http://192.168.1.108:1234/v1/chat/completions
    - 用户名: `admin`
    - 密码: `admin123`
 
-2. **题目管理**
+2. **AI模型管理**
+   - 访问 `/admin/ai-models` 管理AI模型配置
+   - 配置本地模型服务地址
+   - 设置API密钥和访问参数
+   - 监控模型服务状态
+
+3. **题目管理**
    - 访问 `/admin/challenges` 管理题目
    - 支持添加、编辑、删除题目
    - 支持附件上传和提示管理
 
-3. **用户管理**
+4. **用户管理**
    - 访问 `/admin/users` 管理用户
    - 设置管理员权限
    - 查看用户详细信息
 
-4. **AI管理面板**
+5. **AI管理面板**
    - 访问 `/admin_ai` 查看AI功能统计
    - 管理攻击模拟和防御策略
+   - 监控AI模型使用情况
 
 ### 普通用户功能
 
@@ -173,6 +307,7 @@ LAN_MODEL_URL=http://192.168.1.108:1234/v1/chat/completions
 
 3. **AI训练场**
    - 访问 `/ai-arena` 使用AI安全助手
+   - 选择合适的AI模型
    - 获取防御建议和学习资料
    - 进行能力评估
 
@@ -195,7 +330,8 @@ ctf-platform/
 │   └── *.html          # 页面模板
 ├── uploads/            # 上传文件目录
 └── utils/              # 工具模块
-    └── ai_api.py       # AI接口封装
+    ├── ai_api.py       # AI接口封装
+    └── model_manager.py # AI模型管理
 ```
 
 ## 数据库设计
@@ -211,22 +347,11 @@ ctf-platform/
 - **attack_simulations**: 攻击模拟表
 - **defense_strategies**: 防御策略表
 - **user_evaluations**: 用户评估表
+- **ai_models**: AI模型配置表
+- **ai_usage_logs**: AI使用日志表
 
 详细的数据库结构请参考 [ctf_platform.sql](ctf_platform.sql)
 
-## API文档
-
-### 主要API端点
-
-```
-GET  /api/stats                    # 获取平台统计信息
-POST /api/generate_scenario        # 生成AI场景
-POST /api/simulate_attack/{id}     # 模拟攻击
-POST /api/generate_defense/{id}    # 生成防御策略
-POST /api/evaluate_user/{id}       # 用户能力评估
-POST /api/user_defense_advice      # 获取防御建议
-POST /api/security_learning        # 获取学习资料
-```
 
 ## 部署建议
 
@@ -279,6 +404,20 @@ EXPOSE 5000
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
 ```
 
+### AI模型服务部署
+
+```bash
+# 使用Docker部署本地AI模型
+docker run -d \
+  --name im-studio-qwen3 \
+  -p 1234:1234 \
+  -v ./models:/models \
+  im-studio/qwen3.0:latest
+
+# 使用Docker Compose部署多个模型
+docker-compose up -d
+```
+
 ## 故障排除
 
 ### 常见问题
@@ -294,9 +433,22 @@ CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
    - 确认文件类型允许
 
 3. **AI功能无法使用**
-   - 检查API密钥配置
-   - 验证网络连接
-   - 查看模型服务状态
+   - 检查AI模型服务是否启动
+   - 验证API密钥配置
+   - 确认网络连接状态
+   - 检查防火墙端口设置
+
+4. **本地AI模型无响应**
+   - 检查Im-studio服务状态: `im-studio status`
+   - 重启模型服务: `im-studio restart qwen3.0`
+   - 查看服务日志: `im-studio logs qwen3.0`
+   - 检查系统资源使用情况
+
+5. **局域网AI模型连接失败**
+   - 检查网络连通性: `ping 192.168.1.108`
+   - 验证端口开放: `telnet 192.168.1.108 1234`
+   - 检查防火墙设置
+   - 确认服务器IP地址配置
 
 ### 日志调试
 
@@ -306,7 +458,41 @@ CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
 # config.py
 DEBUG = True
 SQLALCHEMY_ECHO = True  # 显示SQL语句
+AI_DEBUG = True  # 显示AI API调用详情
 ```
+
+查看AI服务日志：
+
+```bash
+# 查看Im-studio日志
+im-studio logs qwen3.0
+
+# 查看应用日志
+tail -f app.log
+
+# 查看AI API调用日志
+tail -f ai_api.log
+```
+
+## 性能优化
+
+### AI模型优化
+
+1. **模型选择建议**
+   - 轻量级任务: Gemma3-Local
+   - 通用任务: Qwen3.0-Local（默认）
+   - 复杂推理: Deepseek-R1-Local
+   - 多模态任务: Qwen2.5-VL-Local
+
+2. **资源配置建议**
+   - 最小配置: 8GB RAM, 4核CPU
+   - 推荐配置: 16GB RAM, 8核CPU
+   - 高性能配置: 32GB RAM, 16核CPU, GPU支持
+
+3. **缓存策略**
+   - 启用Redis缓存AI响应
+   - 设置合理的缓存过期时间
+   - 实现智能缓存更新机制
 
 ## 贡献指南
 
@@ -328,6 +514,13 @@ SQLALCHEMY_ECHO = True  # 显示SQL语句
 
 ## 更新日志
 
+### v1.1.0
+- 新增本地AI模型支持（Im-studio）
+- 支持多种AI模型切换
+- 新增局域网AI模型部署功能
+- 完善AI模型管理界面
+- 优化AI响应性能
+
 ### v1.0.0
 - 初始版本发布
 - 基础CTF平台功能
@@ -336,4 +529,4 @@ SQLALCHEMY_ECHO = True  # 显示SQL语句
 
 ---
 
-**注意**: 本项目仅用于教育和学习目的，请遵循相关法律法规，不得用于非法用途。
+**注意**: 本项目仅用于教育和学习目的，请遵循相关法律法规，不得用于非法用途。AI模型的使用需要遵守相应的服务条款和使用协议。
