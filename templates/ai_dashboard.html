@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}AI安全助手 - 用户版{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4 mb-4 text-center">AI安全能力实验室</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-robot"></i> 动态场景生成</h5>
+                </div>
+                <div class="card-body">
+                    <form id="scenarioForm">
+                        <div class="mb-3">
+                            <label for="category" class="form-label">选择类别</label>
+                            <select class="form-select" id="category" required>
+                                {% for category in ['Web', 'Crypto', 'Reverse', 'Pwn', 'Forensics', 'Misc'] %}
+                                <option value="{{ category }}">{{ category }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="difficulty" class="form-label">难度级别</label>
+                            <select class="form-select" id="difficulty" required>
+                                {% for level in ['Easy', 'Medium', 'Hard'] %}
+                                <option value="{{ level }}" {% if level == 'Medium' %}selected{% endif %}>{{ level }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="scenarioContext" class="form-label">场景上下文 (可选)</label>
+                            <textarea class="form-control" id="scenarioContext" rows="3" placeholder="描述场景上下文或特殊要求..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="modelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">生成场景</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-gradient-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt"></i> 防御策略生成</h5>
+                </div>
+                <div class="card-body">
+                    <form id="defenseForm">
+                        <div class="mb-3">
+                            <label for="simulationSelect" class="form-label">选择攻击模拟</label>
+                            <select class="form-select" id="simulationSelect" required>
+                                <option value="" selected disabled>-- 选择攻击模拟 --</option>
+                                {% for sim in simulations %}
+                                <option value="{{ sim.id }}">{{ sim.attack_type }} - {{ sim.attack_level }} ({{ sim.created_at.strftime('%Y-%m-%d %H:%M') }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defenseLevel" class="form-label">防御等级</label>
+                            <select class="form-select" id="defenseLevel" required>
+                                <option value="basic">基础防御</option>
+                                <option value="standard" selected>标准防御</option>
+                                <option value="advanced">高级防御</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defenseModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="defenseModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">生成防御策略</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-user-shield"></i> 攻击模拟</h5>
+                </div>
+                <div class="card-body">
+                    <form id="attackForm">
+                        <div class="mb-3">
+                            <label for="challengeSelect" class="form-label">选择挑战</label>
+                            <select class="form-select" id="challengeSelect" required>
+                                <option value="" selected disabled>-- 选择挑战 --</option>
+                                {% for challenge in challenges %}
+                                <option value="{{ challenge.id }}">{{ challenge.title }} ({{ challenge.difficulty }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attackLevel" class="form-label">攻击级别</label>
+                            <select class="form-select" id="attackLevel" required>
+                                <option value="basic" selected>基础攻击</option>
+                                <option value="advanced">高级攻击</option>
+                                <option value="apt">APT攻击</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="targetInfo" class="form-label">目标系统信息 (可选)</label>
+                            <textarea class="form-control" id="targetInfo" rows="3" placeholder="描述目标系统的配置信息..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attackModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="attackModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">开始攻击模拟</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-gradient-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> 个人能力评估</h5>
+                </div>
+                <div class="card-body">
+                    <form id="selfEvaluationForm">
+                        <div class="mb-3">
+                            <p class="text-muted">生成您的个人能力评估报告，分析您的解题能力和安全技能水平。</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="evalModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="evalModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">生成我的评估报告</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 结果显示区域 -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-terminal"></i> 输出结果</h5>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative">
+                        <pre id="resultOutput" class="bg-dark text-light p-3 rounded" style="height: 400px; overflow-y: auto;">准备就绪，等待操作...</pre>
+                        <button id="copyResultBtn" class="btn btn-sm btn-light position-absolute top-0 end-0 m-2" title="复制结果">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 场景生成表单提交
+    document.getElementById('scenarioForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const data = {
+            category: document.getElementById('category').value,
+            difficulty: document.getElementById('difficulty').value,
+            context: document.getElementById('scenarioContext').value,
+            model_option: document.getElementById('modelOption').value
+        };
+        
+        showResult('正在生成场景，请稍候...');
+        
+        fetch('/api/generate_scenario', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showResult(JSON.stringify(data.scenario, null, 2));
+            } else {
+                showResult('生成场景失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showResult('请求错误: ' + error);
+        });
+    });
+    
+    // 攻击模拟表单提交
+    document.getElementById('attackForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const challengeId = document.getElementById('challengeSelect').value;
+        
+        const data = {
+            attack_level: document.getElementById('attackLevel').value,
+            target_info: document.getElementById('targetInfo').value,
+            model_option: document.getElementById('attackModelOption').value
+        };
+        
+        showResult('正在模拟攻击，请稍候...');
+        
+        fetch(`/api/simulate_attack/${challengeId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showResult(JSON.stringify(data.simulation, null, 2));
+            } else {
+                showResult('攻击模拟失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showResult('请求错误: ' + error);
+        });
+    });
+    
+    // 防御策略表单提交
+    document.getElementById('defenseForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const simulationId = document.getElementById('simulationSelect').value;
+        
+        const data = {
+            defense_level: document.getElementById('defenseLevel').value,
+            model_option: document.getElementById('defenseModelOption').value
+        };
+        
+        showResult('正在生成防御策略，请稍候...');
+        
+        fetch(`/api/generate_defense/${simulationId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showResult(JSON.stringify(data.defense, null, 2));
+            } else {
+                showResult('生成防御策略失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showResult('请求错误: ' + error);
+        });
+    });
+    
+    // 个人评估表单提交
+    document.getElementById('selfEvaluationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const data = {
+            model_option: document.getElementById('evalModelOption').value
+        };
+        
+        showResult('正在生成个人评估报告，请稍候...');
+        
+        fetch('/api/evaluate_self', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showResult(JSON.stringify(data.evaluation, null, 2));
+            } else {
+                showResult('生成评估报告失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showResult('请求错误: ' + error);
+        });
+    });
+    
+    // 显示结果
+    function showResult(text) {
+        document.getElementById('resultOutput').textContent = text;
+    }
+    
+    // 复制结果按钮
+    document.getElementById('copyResultBtn').addEventListener('click', function() {
+        const resultText = document.getElementById('resultOutput').textContent;
+        navigator.clipboard.writeText(resultText)
+            .then(() => {
+                alert('已复制到剪贴板！');
+            })
+            .catch(err => {
+                console.error('复制失败:', err);
+            });
+    });
+});
+</script>
+{% endblock %} 

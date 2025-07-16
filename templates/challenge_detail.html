@@ -1,0 +1,1044 @@
+{% extends "base.html" %}
+
+{% block title %}{{ challenge.title }} - Neon CTF{% endblock %}
+
+{% block content %}
+<div class="challenge-detail-container">
+    <div class="container">
+        <!-- Challenge Header -->
+        <div class="challenge-header">
+            <div class="header-left">
+                <div class="breadcrumb">
+                    <a href="{{ url_for('challenges') }}" class="breadcrumb-link">
+                        <i class="fas fa-arrow-left"></i> 返回题目列表
+                    </a>
+                </div>
+
+                <h1 class="challenge-title">
+                    {{ challenge.title }}
+                    {% if is_solved %}
+                    <span class="solved-badge">
+                        <i class="fas fa-check-circle"></i>
+                        已解决
+                    </span>
+                    {% endif %}
+                </h1>
+
+                <div class="challenge-meta">
+                    <span class="meta-item category" style="--category-color: {{ challenge.category.color }}">
+                        {{ challenge.category.name }}
+                    </span>
+                    <span class="meta-item difficulty badge-{{ challenge.difficulty.lower() }}">
+                        {{ challenge.difficulty }}
+                    </span>
+                    <span class="meta-item points">
+                        <i class="fas fa-star"></i>
+                        {{ challenge.points }} 分
+                    </span>
+                    <span class="meta-item date">
+                        <i class="fas fa-calendar-alt"></i>
+                        {{ challenge.created_at.strftime('%Y-%m-%d') }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="challenge-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ challenge.submissions|selectattr('is_correct')|list|length }}</div>
+                        <div class="stat-label">解决人数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ challenge.submissions|length }}</div>
+                        <div class="stat-label">总提交</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-content">
+            <!-- Challenge Main Content -->
+            <div class="challenge-main">
+                <!-- Challenge Description -->
+                <div class="challenge-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-file-alt"></i>
+                            题目描述
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="challenge-description">
+                            {{ challenge.description|safe }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attachments -->
+                {% if challenge.attachments %}
+                <div class="challenge-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-paperclip"></i>
+                            附件下载
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="attachments-list">
+                            {% for attachment in challenge.attachments %}
+                            <div class="attachment-item">
+                                <div class="attachment-info">
+                                    <i class="fas fa-file"></i>
+                                    <span class="attachment-name">{{ attachment.filename }}</span>
+                                </div>
+                                <a href="/download/{{ attachment.id }}" class="btn btn-outline btn-sm">
+                                    <i class="fas fa-download"></i>
+                                    下载
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Hints Section -->
+                {% if challenge.hints %}
+                <div class="challenge-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-lightbulb"></i>
+                            提示 ({{ challenge.hints|length }} 个)
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="hints-list">
+                            {% for hint in challenge.hints %}
+                            <div class="hint-item" data-hint-id="{{ hint.id }}">
+                                <div class="hint-header">
+                                    <span class="hint-number">提示 {{ loop.index }}</span>
+                                    <span class="hint-cost">
+                                        <i class="fas fa-coins"></i>
+                                        {{ hint.cost }} 分
+                                    </span>
+                                </div>
+
+                                {% if hint in unlocked_hints %}
+                                <div class="hint-content unlocked">
+                                    <i class="fas fa-unlock hint-icon"></i>
+                                    <div class="hint-text">{{ hint.content }}</div>
+                                </div>
+                                {% else %}
+                                <div class="hint-content locked">
+                                    <i class="fas fa-lock hint-icon"></i>
+                                    <button class="btn btn-outline btn-sm unlock-hint-btn"
+                                        onclick="unlockHint({{ hint.id }}, {{ hint.cost }})">
+                                        <i class="fas fa-key"></i>
+                                        解锁 (-{{ hint.cost }}分)
+                                    </button>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Related Challenges -->
+                <div class="challenge-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-sitemap"></i>
+                            相关题目
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="related-list">
+                            <div class="related-item">
+                                <a href="#" class="related-link">
+                                    <div class="related-title">Similar Web Challenge</div>
+                                    <div class="related-meta">Web • 150分 • 已解决</div>
+                                </a>
+                            </div>
+                            <div class="related-item">
+                                <a href="#" class="related-link">
+                                    <div class="related-title">Advanced SQL Injection</div>
+                                    <div class="related-meta">Web • 200分 • 未解决</div>
+                                </a>
+                            </div>
+                            <div class="related-item">
+                                <a href="#" class="related-link">
+                                    <div class="related-title">Web Security Basics</div>
+                                    <div class="related-meta">Web • 100分 • 已解决</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submission History -->
+                {% if submissions %}
+                <div class="challenge-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-history"></i>
+                            提交历史
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="submissions-list">
+                            {% for submission in submissions[:10] %}
+                            <div
+                                class="submission-item {% if submission.is_correct %}correct{% else %}incorrect{% endif %}">
+                                <div class="submission-info">
+                                    <div class="submission-flag">{{ submission.flag_submitted }}</div>
+                                    <div class="submission-time">{{ submission.submitted_at.strftime('%m-%d %H:%M:%S')
+                                        }}</div>
+                                </div>
+                                <div class="submission-status">
+                                    {% if submission.is_correct %}
+                                    <span class="status-icon correct">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                    <span class="status-text">正确 (+{{ submission.points_awarded }}分)</span>
+                                    {% else %}
+                                    <span class="status-icon incorrect">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                    <span class="status-text">错误</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="challenge-sidebar">
+                <!-- Flag Submission -->
+                <div class="flag-submission-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-flag"></i>
+                            提交Flag
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        {% if is_solved %}
+                        <div class="solved-message">
+                            <div class="success-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h4>恭喜！</h4>
+                            <p>你已经成功解决了这道题目</p>
+                            <div class="solved-score">
+                                获得分数：<span>{{ challenge.points }}</span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <form method="POST" action="{{ url_for('submit_flag') }}" class="flag-form">
+                            <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+
+                            <div class="form-group">
+                                <label for="flag" class="form-label">
+                                    输入Flag：
+                                </label>
+                                <div class="flag-input-group">
+                                    <input type="text" id="flag" name="flag" class="form-input flag-input"
+                                        placeholder="flag{...}" required>
+                                    <button type="submit" class="btn btn-primary flag-submit">
+                                        <i class="fas fa-paper-plane"></i>
+                                        提交
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flag-tips">
+                                <div class="tip-item">
+                                    <i class="fas fa-info-circle"></i>
+                                    Flag格式通常为 flag{...}
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    请确保Flag的大小写和格式正确
+                                </div>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- AI解题助手 -->
+                <div class="challenge-card ai-helper-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-robot"></i>
+                            AI解题助手
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="ai-helper-intro">
+                            卡住了？AI解题助手可以给你一些提示和解题思路，但不会直接给出答案
+                        </p>
+
+                        <div class="form-group mb-3">
+                            <label for="partial-solution" class="form-label">
+                                描述你当前的进展和疑问：
+                            </label>
+                            <textarea id="partial-solution" class="form-control bg-dark text-light" rows="3"
+                                placeholder="例如：我已经找到了网站的登录页面，但不知道如何绕过验证..."></textarea>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="hint-model-option" class="form-label">选择模型</label>
+                            <select class="form-select bg-dark text-light" id="hint-model-option">
+                                <option value="Deepseek-R1">使用Deepseek-R1</option>
+                                <option value="Qwen">使用Qwen</option>
+                                <option value="Deepseek-R1-LAN">使用Deepseek-R1（局域网）</option>
+                                <option value="Qwen3.0-LAN">使用Qwen3.0（局域网）</option>
+                                <option value="Qwen2.5-VL-LAN">使用Qwen2.5-VL（局域网）</option>
+                                <option value="Qwen2.5-Omni-LAN">使用Qwen2.5-Omni（局域网）</option>
+                                <option value="Gemma3-LAN">使用Gemma3（局域网）</option>
+                                <option value="Deepseek-R1-Local">使用Deepseek-R1（本地）</option>
+                                <option value="Qwen3.0-Local" selected>使用Qwen3.0（本地）</option>
+                                <option value="Qwen2.5-VL-Local">使用Qwen2.5-VL（本地）</option>
+                                <option value="Qwen2.5-Omni-Local">使用Qwen2.5-Omni（本地）</option>
+                                <option value="Gemma3-Local">使用Gemma3（本地）</option>
+                            </select>
+                        </div>
+
+                        <button id="get-ai-hint" class="btn btn-info w-100">
+                            <i class="fas fa-lightbulb"></i>
+                            获取AI提示
+                        </button>
+
+                        <div id="ai-hint-result" class="mt-3" style="display: none;">
+                            <div class="spinner-border text-info" id="ai-hint-spinner" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div class="ai-hint-content p-3 border border-info rounded mt-2">
+                                <div id="ai-hint-text"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenge Tools -->
+                <div class="tools-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-tools"></i>
+                            实用工具
+                        </h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="tools-grid">
+                            <a href="{{ url_for('tools') }}?tool=base64" class="tool-item">
+                                <i class="fas fa-code"></i>
+                                <span>Base64</span>
+                                <div class="tool-description">编码/解码</div>
+                            </a>
+                            <a href="{{ url_for('tools') }}?tool=hex" class="tool-item">
+                                <i class="fas fa-hashtag"></i>
+                                <span>Hex转换</span>
+                                <div class="tool-description">十六进制转换</div>
+                            </a>
+                            <a href="{{ url_for('tools') }}?tool=caesar" class="tool-item">
+                                <i class="fas fa-key"></i>
+                                <span>凯撒密码</span>
+                                <div class="tool-description">经典密码</div>
+                            </a>
+                            <a href="{{ url_for('tools') }}?tool=hash" class="tool-item">
+                                <i class="fas fa-fingerprint"></i>
+                                <span>Hash计算</span>
+                                <div class="tool-description">MD5/SHA</div>
+                            </a>
+                            <a href="{{ url_for('tools') }}?tool=url" class="tool-item">
+                                <i class="fas fa-link"></i>
+                                <span>URL编码</span>
+                                <div class="tool-description">URL编码/解码</div>
+                            </a>
+                            <a href="{{ url_for('tools') }}?tool=binary" class="tool-item">
+                                <i class="fas fa-cog"></i>
+                                <span>二进制</span>
+                                <div class="tool-description">二进制转换</div>
+                            </a>
+                        </div>
+
+                        <div class="tools-footer">
+                            <a href="{{ url_for('tools') }}" class="btn btn-outline btn-sm">
+                                <i class="fas fa-external-link-alt"></i>
+                                打开完整工具页面
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .challenge-detail-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 140px);
+    }
+
+    .challenge-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 2rem;
+        align-items: start;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--bg-float) 0%, var(--bg-tertiary) 100%);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .challenge-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition-fast);
+    }
+
+    .breadcrumb-link:hover {
+        color: var(--accent-blue);
+    }
+
+    .challenge-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .solved-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(45deg, var(--accent-green), var(--accent-cyan));
+        color: white;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 0 15px rgba(158, 206, 106, 0.3);
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    .challenge-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .meta-item.category {
+        background: rgba(122, 162, 247, 0.1);
+        color: var(--category-color, var(--accent-blue));
+        border: 1px solid var(--category-color, var(--accent-blue));
+    }
+
+    .meta-item.points {
+        background: rgba(158, 206, 106, 0.1);
+        color: var(--accent-green);
+        border: 1px solid var(--accent-green);
+    }
+
+    .meta-item.date {
+        background: rgba(224, 175, 104, 0.1);
+        color: var(--accent-orange);
+        border: 1px solid var(--accent-orange);
+    }
+
+    .challenge-stats {
+        display: flex;
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .challenge-content {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .challenge-card,
+    .flag-submission-card,
+    .tools-card {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        overflow: hidden;
+        transition: var(--transition-normal);
+    }
+
+    .challenge-card:hover,
+    .flag-submission-card:hover,
+    .tools-card:hover {
+        border-color: var(--accent-blue);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        padding: 1.5rem;
+        background: var(--bg-tertiary);
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .challenge-description {
+        color: var(--text-secondary);
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+
+    .attachments-list,
+    .hints-list,
+    .submissions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .attachment-item,
+    .hint-item,
+    .submission-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        transition: var(--transition-fast);
+    }
+
+    .attachment-item:hover,
+    .hint-item:hover,
+    .submission-item:hover {
+        border-color: var(--accent-blue);
+        background: rgba(122, 162, 247, 0.05);
+    }
+
+    .attachment-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .hint-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .hint-number {
+        color: var(--accent-blue);
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .hint-cost {
+        color: var(--accent-orange);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .hint-content {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .hint-content.locked {
+        opacity: 0.7;
+    }
+
+    .hint-content.locked .hint-text {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .hint-content.unlocked .hint-text {
+        color: var(--text-primary);
+        line-height: 1.5;
+    }
+
+    .hint-icon {
+        color: var(--accent-blue);
+        font-size: 1.1rem;
+    }
+
+    .hint-content.locked .hint-icon {
+        color: var(--text-muted);
+    }
+
+    .unlock-hint-btn {
+        margin-left: auto;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+
+    .hint-text {
+        flex: 1;
+        color: var(--text-secondary);
+        padding: 0.5rem;
+        background: var(--bg-primary);
+        border-radius: 4px;
+        border-left: 3px solid var(--accent-blue);
+    }
+
+    .submission-item.correct {
+        border-color: var(--accent-green);
+        background: rgba(158, 206, 106, 0.05);
+    }
+
+    .submission-item.incorrect {
+        border-color: var(--accent-red);
+        background: rgba(247, 118, 142, 0.05);
+    }
+
+    .submission-info {
+        flex: 1;
+    }
+
+    .submission-flag {
+        font-family: var(--font-mono);
+        color: var(--text-primary);
+        word-break: break-all;
+    }
+
+    .submission-time {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .submission-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.8rem;
+    }
+
+    .status-icon.correct {
+        background: var(--accent-green);
+    }
+
+    .status-icon.incorrect {
+        background: var(--accent-red);
+    }
+
+    .status-text {
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .solved-message {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .success-icon {
+        font-size: 3rem;
+        color: var(--accent-green);
+        margin-bottom: 1rem;
+        animation: bounce 2s infinite;
+    }
+
+    .solved-message h4 {
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 1.5rem;
+    }
+
+    .solved-message p {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+    }
+
+    .solved-score {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    .solved-score span {
+        font-weight: 700;
+        font-family: var(--font-mono);
+        color: var(--accent-green);
+    }
+
+    .flag-input-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .flag-input {
+        flex: 1;
+        font-family: var(--font-mono);
+    }
+
+    .flag-submit {
+        white-space: nowrap;
+    }
+
+    .flag-tips {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-primary);
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .tip-item i {
+        color: var(--accent-blue);
+    }
+
+    .tools-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-primary);
+        text-align: center;
+    }
+
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .tool-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text-secondary);
+        transition: var(--transition-fast);
+    }
+
+    .tool-item:hover {
+        color: var(--accent-blue);
+        border-color: var(--accent-blue);
+        background: rgba(122, 162, 247, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .tool-item i {
+        font-size: 1.5rem;
+    }
+
+    .tool-description {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-align: center;
+        opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+        .challenge-header {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .challenge-content {
+            grid-template-columns: 1fr;
+        }
+
+        .challenge-title {
+            font-size: 2rem;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .challenge-meta {
+            justify-content: center;
+        }
+
+        .challenge-stats {
+            justify-content: center;
+        }
+
+        .tools-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .flag-input-group {
+            flex-direction: column;
+        }
+    }
+
+    /* 动画效果 */
+    @keyframes bounce {
+
+        0%,
+        20%,
+        53%,
+        80%,
+        100% {
+            transform: translateY(0);
+        }
+
+        40%,
+        43% {
+            transform: translateY(-10px);
+        }
+
+        70% {
+            transform: translateY(-5px);
+        }
+
+        90% {
+            transform: translateY(-2px);
+        }
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 15px rgba(158, 206, 106, 0.3);
+        }
+
+        50% {
+            box-shadow: 0 0 25px rgba(158, 206, 106, 0.6);
+        }
+    }
+</style>
+
+<script>
+    function unlockHint(hintId, cost) {
+        if (confirm(`确定要花费 ${cost} 分解锁这个提示吗？`)) {
+            fetch('/unlock_hint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `hint_id=${hintId}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 更新提示显示
+                        const hintItem = document.querySelector(`[data-hint-id="${hintId}"]`);
+                        const hintContent = hintItem.querySelector('.hint-content');
+
+                        hintContent.innerHTML = `
+                            <i class="fas fa-unlock hint-icon"></i>
+                            <div class="hint-text">${data.hint_content}</div>
+                        `;
+                        hintContent.classList.remove('locked');
+                        hintContent.classList.add('unlocked');
+
+                        // 更新分数显示
+                        updateUserScore(data.new_score);
+
+                        showNotification(data.message, 'success');
+                    } else {
+                        showNotification(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('解锁失败', 'error');
+                });
+        }
+    }
+
+    function updateUserScore(newScore) {
+        // 更新导航栏中的分数显示
+        const scoreElement = document.querySelector('.nav-user .user-score');
+        if (scoreElement) {
+            scoreElement.textContent = newScore;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Auto-focus flag input
+        const flagInput = document.querySelector('.flag-input');
+        if (flagInput && !flagInput.closest('.solved-message')) {
+            setTimeout(() => flagInput.focus(), 500);
+        }
+
+        // Flag input validation
+        if (flagInput) {
+            flagInput.addEventListener('input', function () {
+                const value = this.value.trim();
+                const submitBtn = document.querySelector('.flag-submit');
+
+                if (value.startsWith('flag{') && value.endsWith('}') && value.length > 6) {
+                    submitBtn.style.background = 'linear-gradient(45deg, var(--accent-green), var(--accent-cyan))';
+                } else {
+                    submitBtn.style.background = '';
+                }
+            });
+        }
+
+        // Form submission with loading state
+        const flagForm = document.querySelector('.flag-form');
+        if (flagForm) {
+            flagForm.addEventListener('submit', function () {
+                const submitBtn = this.querySelector('.flag-submit');
+                const originalText = submitBtn.innerHTML;
+
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 提交中...';
+                submitBtn.disabled = true;
+
+                // Re-enable after a timeout (in case of error)
+                setTimeout(() => {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 5000);
+            });
+        }
+
+        // AI提示功能
+        const getAiHintBtn = document.getElementById('get-ai-hint');
+        if (getAiHintBtn) {
+            getAiHintBtn.addEventListener('click', function () {
+                const aiHintResult = document.getElementById('ai-hint-result');
+                const aiHintSpinner = document.getElementById('ai-hint-spinner');
+                const aiHintText = document.getElementById('ai-hint-text');
+                const partialSolution = document.getElementById('partial-solution').value;
+                const modelOption = document.getElementById('hint-model-option').value;
+
+                // 显示加载状态
+                aiHintResult.style.display = 'block';
+                aiHintSpinner.style.display = 'block';
+                aiHintText.textContent = '';
+
+                // 发送API请求
+                fetch(`/api/suggest_solution/{{ challenge.id }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        partial_solution: partialSolution,
+                        model_option: modelOption
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        aiHintSpinner.style.display = 'none';
+
+                        if (data.success) {
+                            aiHintText.innerHTML = `<div class="ai-response"><i class="fas fa-robot text-info me-2"></i> ${data.suggestion.replace(/\n/g, '<br>')}</div>`;
+                        } else {
+                            aiHintText.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+                        }
+                    })
+                    .catch(error => {
+                        aiHintSpinner.style.display = 'none';
+                        aiHintText.innerHTML = `<div class="alert alert-danger">请求失败: ${error}</div>`;
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

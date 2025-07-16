@@ -1,0 +1,312 @@
+{% extends "base.html" %}
+
+{% block title %}AI安全训练场{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4 mb-4 text-center">AI安全训练场</h2>
+    <p class="text-center mb-4">在这里，你可以与AI-Agent进行攻防对抗训练，提升你的网络安全技能</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-robot"></i> AI攻击助手</h5>
+                </div>
+                <div class="card-body">
+                    <form id="attackAssistantForm">
+                        <div class="mb-3">
+                            <label for="challengeSelect" class="form-label">选择挑战</label>
+                            <select class="form-select" id="challengeSelect" required>
+                                <option value="" selected disabled>-- 选择挑战 --</option>
+                                {% for challenge in challenges %}
+                                <option value="{{ challenge.id }}">{{ challenge.title }} ({{ challenge.difficulty }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attackQuestion" class="form-label">你的问题或需求</label>
+                            <textarea class="form-control" id="attackQuestion" rows="3" placeholder="例如：我该如何分析这个挑战的漏洞？请给我一些攻击思路..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attackModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="attackModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">获取攻击建议</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt"></i> AI防御助手</h5>
+                </div>
+                <div class="card-body">
+                    <form id="defenseAssistantForm">
+                        <div class="mb-3">
+                            <label for="vulnerabilityDescription" class="form-label">描述漏洞或攻击场景</label>
+                            <textarea class="form-control" id="vulnerabilityDescription" rows="3" placeholder="例如：我发现了一个SQL注入漏洞，攻击者可以通过输入特殊字符绕过登录..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defenseQuestion" class="form-label">你的防御问题</label>
+                            <textarea class="form-control" id="defenseQuestion" rows="2" placeholder="例如：如何修复这个漏洞并防止类似攻击？"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defenseModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="defenseModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">获取防御建议</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap"></i> AI学习助手</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="securityTopic" class="form-label">安全学习主题</label>
+                        <select class="form-select" id="securityTopic">
+                            <option value="" selected disabled>-- 选择学习主题 --</option>
+                            <option value="web">Web安全</option>
+                            <option value="crypto">密码学</option>
+                            <option value="reverse">逆向工程</option>
+                            <option value="pwn">二进制利用</option>
+                            <option value="forensics">数字取证</option>
+                            <option value="network">网络安全</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skillLevel" class="form-label">你的技能水平</label>
+                        <select class="form-select" id="skillLevel">
+                            <option value="beginner">初学者</option>
+                            <option value="intermediate" selected>中级</option>
+                            <option value="advanced">高级</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="learningQuestion" class="form-label">你想学习什么？</label>
+                        <textarea class="form-control" id="learningQuestion" rows="3" placeholder="例如：我想了解XSS攻击的不同类型及防御方法..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="learningModelOption" class="form-label">选择模型</label>
+                        <select class="form-select" id="learningModelOption">
+                            <optgroup label="API模型">
+                                <option value="Deepseek-R1">Deepseek-R1</option>
+                                <option value="Qwen">Qwen2.5-14B</option>
+                            </optgroup>
+                            <optgroup label="本地模型">
+                                <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                <option value="Gemma3-Local">Gemma3-Local</option>
+                            </optgroup>
+                            <optgroup label="局域网模型">
+                                <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                <option value="Gemma3-LAN">Gemma3-LAN</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <button type="button" id="learningBtn" class="btn btn-info w-100">获取学习资料</button>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-terminal"></i> AI响应</h5>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative">
+                        <pre id="aiOutput" class="bg-dark text-light p-3 rounded" style="height: 400px; overflow-y: auto;">AI助手已准备就绪，请在左侧面板提交你的问题...</pre>
+                        <button id="copyOutputBtn" class="btn btn-sm btn-light position-absolute top-0 end-0 m-2" title="复制结果">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 攻击助手表单提交
+    document.getElementById('attackAssistantForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const challengeId = document.getElementById('challengeSelect').value;
+        const question = document.getElementById('attackQuestion').value;
+        const modelOption = document.getElementById('attackModelOption').value;
+        
+        if (!challengeId || !question) {
+            showOutput('请选择挑战并输入你的问题');
+            return;
+        }
+        
+        showOutput('正在分析你的问题，请稍候...');
+        
+        fetch('/api/suggest_solution/' + challengeId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                partial_solution: question,
+                model_option: modelOption
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showOutput(data.suggestion.solution_suggestion);
+            } else {
+                showOutput('获取攻击建议失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showOutput('请求错误: ' + error);
+        });
+    });
+    
+    // 防御助手表单提交
+    document.getElementById('defenseAssistantForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const vulnerability = document.getElementById('vulnerabilityDescription').value;
+        const question = document.getElementById('defenseQuestion').value;
+        const modelOption = document.getElementById('defenseModelOption').value;
+        
+        if (!vulnerability || !question) {
+            showOutput('请描述漏洞场景并输入你的防御问题');
+            return;
+        }
+        
+        showOutput('正在分析防御策略，请稍候...');
+        
+        fetch('/api/user_defense_advice', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                vulnerability: vulnerability,
+                question: question,
+                model_option: modelOption
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showOutput(data.defense_advice);
+            } else {
+                showOutput('获取防御建议失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showOutput('请求错误: ' + error);
+        });
+    });
+    
+    // 学习助手按钮点击
+    document.getElementById('learningBtn').addEventListener('click', function() {
+        const topic = document.getElementById('securityTopic').value;
+        const level = document.getElementById('skillLevel').value;
+        const question = document.getElementById('learningQuestion').value;
+        const modelOption = document.getElementById('learningModelOption').value;
+        
+        if (!topic || !question) {
+            showOutput('请选择学习主题并输入你的问题');
+            return;
+        }
+        
+        showOutput('正在生成学习资料，请稍候...');
+        
+        fetch('/api/security_learning', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                topic: topic,
+                skill_level: level,
+                question: question,
+                model_option: modelOption
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showOutput(data.learning_material);
+            } else {
+                showOutput('获取学习资料失败: ' + data.message);
+            }
+        })
+        .catch(error => {
+            showOutput('请求错误: ' + error);
+        });
+    });
+    
+    // 复制按钮点击
+    document.getElementById('copyOutputBtn').addEventListener('click', function() {
+        const outputText = document.getElementById('aiOutput').textContent;
+        navigator.clipboard.writeText(outputText)
+            .then(() => {
+                alert('已复制到剪贴板！');
+            })
+            .catch(err => {
+                console.error('复制失败:', err);
+            });
+    });
+    
+    // 显示输出
+    function showOutput(text) {
+        document.getElementById('aiOutput').textContent = text;
+    }
+});
+</script>
+{% endblock %} 

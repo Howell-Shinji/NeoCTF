@@ -1,0 +1,376 @@
+{% extends "base.html" %}
+
+{% block title %}登录 - Neon CTF{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="auth-wrapper">
+            <div class="auth-visual">
+                <div class="auth-illustration">
+                    <div class="cyber-lock">
+                        <div class="lock-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="security-rings">
+                            <div class="ring ring-1"></div>
+                            <div class="ring ring-2"></div>
+                            <div class="ring ring-3"></div>
+                        </div>
+                    </div>
+                    <h2 class="auth-visual-title">安全验证</h2>
+                    <p class="auth-visual-subtitle">进入Neon CTF平台</p>
+                </div>
+            </div>
+
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">
+                        <span class="neon-text">欢迎回来</span>
+                    </h1>
+                    <p class="auth-subtitle">登录你的账户继续挑战</p>
+                </div>
+
+                <form method="POST" class="auth-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user"></i>
+                            用户名
+                        </label>
+                        <input type="text" id="username" name="username" class="form-input" placeholder="输入你的用户名"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            密码
+                        </label>
+                        <div class="password-input">
+                            <input type="password" id="password" name="password" class="form-input" placeholder="输入你的密码"
+                                required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-sign-in-alt"></i>
+                            登录
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-footer">
+                    <p class="auth-link-text">
+                        还没有账户？
+                        <a href="{{ url_for('register') }}" class="auth-link">立即注册</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        padding: 2rem 0;
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        position: relative;
+    }
+
+    .auth-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 20% 80%, rgba(122, 162, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(187, 154, 247, 0.1) 0%, transparent 50%);
+        animation: aurora 10s ease-in-out infinite;
+    }
+
+    .auth-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .auth-visual {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .auth-illustration {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .cyber-lock {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+
+    .lock-icon {
+        font-size: 4rem;
+        color: var(--accent-cyan);
+        text-shadow: 0 0 20px var(--accent-cyan);
+        position: relative;
+        z-index: 2;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .security-rings {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .ring {
+        position: absolute;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        animation: rotate 4s linear infinite;
+    }
+
+    .ring-1 {
+        width: 80px;
+        height: 80px;
+        border-top-color: var(--accent-blue);
+        border-right-color: var(--accent-blue);
+        top: -40px;
+        left: -40px;
+    }
+
+    .ring-2 {
+        width: 120px;
+        height: 120px;
+        border-top-color: var(--accent-purple);
+        border-left-color: var(--accent-purple);
+        top: -60px;
+        left: -60px;
+        animation-delay: -1s;
+    }
+
+    .ring-3 {
+        width: 160px;
+        height: 160px;
+        border-top-color: var(--accent-pink);
+        border-bottom-color: var(--accent-pink);
+        top: -80px;
+        left: -80px;
+        animation-delay: -2s;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .auth-visual-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        font-family: var(--font-mono);
+    }
+
+    .auth-visual-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .auth-form-container {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+    }
+
+    .auth-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .auth-form {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-label i {
+        color: var(--accent-blue);
+    }
+
+    .password-input {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 1rem;
+        transition: var(--transition-fast);
+    }
+
+    .password-toggle:hover {
+        color: var(--accent-blue);
+    }
+
+    .btn-full {
+        width: 100%;
+        justify-content: center;
+        font-size: 1.1rem;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .auth-footer {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid var(--border-primary);
+    }
+
+    .auth-link-text {
+        color: var(--text-secondary);
+    }
+
+    .auth-link {
+        color: var(--accent-blue);
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition-fast);
+    }
+
+    .auth-link:hover {
+        color: var(--accent-purple);
+        text-shadow: 0 0 5px var(--accent-purple);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .auth-wrapper {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .auth-visual {
+            order: 2;
+        }
+
+        .auth-form-container {
+            padding: 2rem;
+        }
+
+        .auth-title {
+            font-size: 2rem;
+        }
+
+        .ring-1,
+        .ring-2,
+        .ring-3 {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .auth-form-container {
+            padding: 1.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const toggle = input.nextElementSibling;
+        const icon = toggle.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Add focus effects
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputs = document.querySelectorAll('.form-input');
+
+        inputs.forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentNode.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function () {
+                this.parentNode.classList.remove('focused');
+            });
+        });
+    });
+</script>
+{% endblock %}

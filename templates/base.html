@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Neon CTF{% endblock %}</title>
+
+    <!-- Tokyo Night CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokyo-night.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="cyber-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="{{ url_for('index') }}" class="brand-link">
+                    <i class="fas fa-terminal neon-icon"></i>
+                    <span class="brand-text">Neon<span class="neon-accent">CTF</span></span>
+                </a>
+            </div>
+
+            <div class="nav-menu" id="nav-menu">
+
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}"
+                    class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-tachometer-alt"></i> 仪表盘
+                </a>
+                <a href="{{ url_for('challenges') }}"
+                    class="nav-link {% if request.endpoint == 'challenges' %}active{% endif %}">
+                    <i class="fas fa-flag"></i> 挑战
+                </a>
+                <a href="{{ url_for('scoreboard') }}"
+                    class="nav-link {% if request.endpoint == 'scoreboard' %}active{% endif %}">
+                    <i class="fas fa-trophy"></i> 排行榜
+                </a>
+                <a href="{{ url_for('ai_arena') }}" class="nav-link {% if request.endpoint == 'ai_arena' %}active{% endif %}">
+                    <i class="fas fa-brain"></i> AI训练场
+                </a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin_ai') }}" class="nav-link {% if request.endpoint == 'admin_ai' %}active{% endif %}">
+                    <i class="fas fa-robot"></i> AI实验室
+                </a>
+                {% else %}
+                <a href="{{ url_for('ai_lab') }}" class="nav-link {% if request.endpoint == 'ai_lab' %}active{% endif %}">
+                    <i class="fas fa-robot"></i> AI实验室
+                </a>
+                {% endif %}
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('admin') }}"
+                    class="nav-link {% if request.endpoint.startswith('admin') %}active{% endif %}">
+                    <i class="fas fa-cog"></i> 管理
+                </a>
+                {% endif %}
+
+                <div class="nav-user">
+                    <span class="user-score">{{ current_user.score }}分</span>
+                    <div class="user-dropdown">
+                        <button class="user-btn">
+                            <i class="fas fa-user-circle"></i>
+                            {{ current_user.username }}
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{{ url_for('logout') }}" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i> 登出
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i> 登录
+                </a>
+                <a href="{{ url_for('register') }}" class="nav-link register-btn">
+                    <i class="fas fa-user-plus"></i> 注册
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+            <span class="flash-text">{{ message }}</span>
+            <button class="flash-close" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <p>&copy; 2025 Neon CTF Platform</p>
+                </div>
+                <div class="footer-right">
+                    <a href="#" class="footer-link">关于我们</a>
+                    <a href="#" class="footer-link">联系我们</a>
+                    <a href="#" class="footer-link">帮助</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

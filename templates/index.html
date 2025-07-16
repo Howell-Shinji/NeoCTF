@@ -1,0 +1,598 @@
+{% extends "base.html" %}
+
+{% block title %}欢迎来到 Neon CTF{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="neon-text">Neon</span>
+                <span class="accent-text">Light</span>
+                <span class="cyber-text">CTF</span>
+            </h1>
+            <p class="hero-subtitle">
+                探索网络安全的霓虹世界，在这个充满挑战的赛博空间中展现你的技能
+            </p>
+            <div class="hero-buttons">
+                <a href="{{ url_for('register') }}" class="btn btn-primary floating">
+                    <i class="fas fa-rocket"></i>
+                    开始挑战
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline">
+                    <i class="fas fa-sign-in-alt"></i>
+                    立即登录
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="cyber-terminal">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="btn-close"></span>
+                        <span class="btn-minimize"></span>
+                        <span class="btn-maximize"></span>
+                    </div>
+                    <span class="terminal-title">neon-ctf@夜光终端</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span>
+                        <span class="command">./start_ctf.sh</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">正在初始化 Neon CTF 平台...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output success">✓ 系统安全检查完成</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output success">✓ 挑战环境已就绪</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output warning">⚡ 准备好接受挑战了吗？</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">$</span>
+                        <span class="cursor">_</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <h2 class="section-title">平台特色</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">多样化挑战</h3>
+                <p class="feature-description">
+                    涵盖Web安全、密码学、逆向工程、PWN、取证分析等多个领域的专业题目
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="feature-title">实时排行榜</h3>
+                <p class="feature-description">
+                    实时更新的排行榜系统，与其他选手竞技，展现你的网络安全技能
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="feature-title">学习成长</h3>
+                <p class="feature-description">
+                    从初级到高级的循序渐进题目设计，帮助你系统性提升安全技能
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">社区交流</h3>
+                <p class="feature-description">
+                    活跃的技术社区，与志同道合的安全爱好者分享经验和知识
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section">
+    <div class="container">
+        <h2 class="section-title">平台数据</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users stat-icon icon-users"></i>
+                <div class="stat-number">1,337</div>
+                <div class="stat-label">注册用户</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-flag stat-icon icon-challenges"></i>
+                <div class="stat-number">256</div>
+                <div class="stat-label">活跃题目</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-chart-line stat-icon icon-submissions"></i>
+                <div class="stat-number">50,432</div>
+                <div class="stat-label">总提交数</div>
+            </div>
+
+            <div class="stat-card">
+                <i class="fas fa-check-circle stat-icon icon-correct"></i>
+                <div class="stat-number">12,845</div>
+                <div class="stat-label">成功解题</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">准备好开始你的网络安全之旅了吗？</h2>
+            <p class="cta-description">
+                加入Neon CTF，在霓虹闪烁的赛博世界中挑战自我，提升技能！
+            </p>
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">
+                <i class="fas fa-rocket"></i>
+                立即注册
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Hero Section */
+    .hero-section {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, rgba(26, 27, 38, 0.9) 0%, rgba(36, 40, 59, 0.9) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(122, 162, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(187, 154, 247, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 60%, rgba(247, 118, 142, 0.1) 0%, transparent 50%);
+        animation: aurora 8s ease-in-out infinite;
+    }
+
+    @keyframes aurora {
+
+        0%,
+        100% {
+            transform: rotate(0deg) scale(1);
+        }
+
+        33% {
+            transform: rotate(120deg) scale(1.1);
+        }
+
+        66% {
+            transform: rotate(240deg) scale(0.9);
+        }
+    }
+
+    .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        font-family: var(--font-mono);
+    }
+
+    .neon-text {
+        color: var(--accent-cyan);
+        text-shadow: 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-cyan);
+        animation: neon-pulse 2s ease-in-out infinite;
+    }
+
+    .accent-text {
+        color: var(--accent-purple);
+        text-shadow: 0 0 10px var(--accent-purple);
+    }
+
+    .cyber-text {
+        background: linear-gradient(45deg, var(--accent-pink), var(--accent-orange));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-large {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+    }
+
+    /* Terminal */
+    .cyber-terminal {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+
+    .cyber-terminal::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg,
+                rgba(122, 162, 247, 0.05) 0%,
+                rgba(187, 154, 247, 0.05) 50%,
+                rgba(247, 118, 142, 0.05) 100%);
+        pointer-events: none;
+    }
+
+    .terminal-header {
+        background: var(--bg-tertiary);
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .terminal-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .terminal-buttons span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .btn-close {
+        background: var(--accent-red);
+    }
+
+    .btn-minimize {
+        background: var(--accent-orange);
+    }
+
+    .btn-maximize {
+        background: var(--accent-green);
+    }
+
+    .terminal-title {
+        color: var(--text-secondary);
+        font-family: var(--font-mono);
+        font-size: 0.875rem;
+    }
+
+    .terminal-body {
+        padding: 1.5rem;
+        font-family: var(--font-mono);
+        background: var(--bg-primary);
+    }
+
+    .terminal-line {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .prompt {
+        color: var(--accent-green);
+        font-weight: 700;
+    }
+
+    .command {
+        color: var(--accent-blue);
+    }
+
+    .output {
+        color: var(--text-secondary);
+    }
+
+    .output.success {
+        color: var(--accent-green);
+    }
+
+    .output.warning {
+        color: var(--accent-orange);
+    }
+
+    .cursor {
+        color: var(--accent-cyan);
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+        0%,
+        50% {
+            opacity: 1;
+        }
+
+        51%,
+        100% {
+            opacity: 0;
+        }
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 6rem 0;
+        background: var(--bg-primary);
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: var(--text-primary);
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        border-radius: 2px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card {
+        text-align: center;
+        padding: 2rem;
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        transition: var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        transform: scaleX(0);
+        transition: var(--transition-normal);
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-blue);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .feature-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        padding: 6rem 0;
+        background: var(--bg-secondary);
+        position: relative;
+    }
+
+    .stats-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            linear-gradient(45deg, rgba(122, 162, 247, 0.05) 0%, transparent 50%),
+            linear-gradient(-45deg, rgba(187, 154, 247, 0.05) 0%, transparent 50%);
+    }
+
+    /* CTA Section */
+    .cta-section {
+        padding: 6rem 0;
+        background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-primary) 100%);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 30% 30%, rgba(125, 207, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 70% 70%, rgba(247, 118, 142, 0.1) 0%, transparent 50%);
+        animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+
+        0%,
+        100% {
+            opacity: 0.5;
+        }
+
+        50% {
+            opacity: 1;
+        }
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    .cta-description {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .hero-buttons {
+            justify-content: center;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Additional hero section animations
+    document.addEventListener('DOMContentLoaded', function () {
+        // Typing animation for terminal
+        const commands = [
+            { text: 'whoami', delay: 1000 },
+            { text: 'ethical_hacker', delay: 2000 },
+            { text: 'ls -la /challenges', delay: 3000 },
+            { text: 'cat flag.txt', delay: 4000 },
+            { text: 'flag{neon_awaits}', delay: 5000 }
+        ];
+
+        // Add more terminal lines dynamically
+        setTimeout(() => {
+            const terminalBody = document.querySelector('.terminal-body');
+            if (terminalBody) {
+                commands.forEach((cmd, index) => {
+                    setTimeout(() => {
+                        const line = document.createElement('div');
+                        line.className = 'terminal-line';
+                        line.innerHTML = `
+                        <span class="prompt">$</span>
+                        <span class="command">${cmd.text}</span>
+                    `;
+                        terminalBody.insertBefore(line, terminalBody.lastElementChild);
+                    }, cmd.delay);
+                });
+            }
+        }, 2000);
+    });
+</script>
+{% endblock %}

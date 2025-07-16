@@ -1,0 +1,118 @@
+.tool-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: var(--bg-float);
+    margin: 5% auto;
+    padding: 0;
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.close {
+    color: var(--text-secondary);
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: var(--accent-blue);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.tool-section {
+    margin-bottom: 1.5rem;
+}
+
+.tool-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.tool-section textarea,
+.tool-section input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-primary);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.tool-section input[type="number"] {
+    min-height: auto;
+    height: 40px;
+}
+
+.tool-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.tool-buttons button {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--accent-blue);
+    border-radius: 8px;
+    background: var(--accent-blue);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+}
+
+.tool-buttons button:hover {
+    background: var(--accent-purple);
+    border-color: var(--accent-purple);
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 2% auto;
+    }
+
+    .tool-buttons {
+        flex-direction: column;
+    }
+
+    .tool-buttons button {
+        width: 100%;
+    }
+}

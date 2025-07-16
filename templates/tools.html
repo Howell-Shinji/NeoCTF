@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}实用工具 - Neon CTF{% endblock %}
+
+{% block content %}
+<div class="tools-page">
+    <div class="container">
+        <!-- 工具页面标题 -->
+        <div class="tools-header">
+            <div class="breadcrumb">
+                <a href="{{ url_for('challenges') }}" class="breadcrumb-link">
+                    <i class="fas fa-arrow-left"></i> 返回题目列表
+                </a>
+                {% if request.referrer and 'challenge' in request.referrer %}
+                <span class="breadcrumb-separator">/</span>
+                <a href="{{ request.referrer }}" class="breadcrumb-link">
+                    <i class="fas fa-arrow-left"></i> 返回题目
+                </a>
+                {% endif %}
+            </div>
+
+            <h1 class="tools-title">
+                <i class="fas fa-tools"></i>
+                CTF 实用工具集
+            </h1>
+            <p class="tools-description">
+                为CTF比赛精心挑选的实用工具，帮助你更高效地解决问题
+            </p>
+        </div>
+
+        <!-- 工具网格 -->
+        <div class="tools-grid">
+            <!-- Base64 工具 -->
+            <div class="tool-card" data-tool="base64">
+                <div class="tool-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3 class="tool-title">Base64 编码/解码</h3>
+                <p class="tool-description">
+                    对文本进行Base64编码和解码操作，支持中文字符
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">编码</span>
+                    <span class="tag">解码</span>
+                </div>
+            </div>
+
+            <!-- Hex 工具 -->
+            <div class="tool-card" data-tool="hex">
+                <div class="tool-icon">
+                    <i class="fas fa-hashtag"></i>
+                </div>
+                <h3 class="tool-title">Hex 十六进制转换</h3>
+                <p class="tool-description">
+                    文本与十六进制之间的相互转换工具
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">十六进制</span>
+                    <span class="tag">转换</span>
+                </div>
+            </div>
+
+            <!-- 凯撒密码 -->
+            <div class="tool-card" data-tool="caesar">
+                <div class="tool-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h3 class="tool-title">凯撒密码</h3>
+                <p class="tool-description">
+                    经典的凯撒密码加密/解密，支持暴力破解
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">密码学</span>
+                    <span class="tag">古典密码</span>
+                </div>
+            </div>
+
+            <!-- Hash 计算 -->
+            <div class="tool-card" data-tool="hash">
+                <div class="tool-icon">
+                    <i class="fas fa-fingerprint"></i>
+                </div>
+                <h3 class="tool-title">Hash 计算</h3>
+                <p class="tool-description">
+                    计算文本的MD5、SHA1、SHA256等哈希值
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">哈希</span>
+                    <span class="tag">MD5</span>
+                    <span class="tag">SHA</span>
+                </div>
+            </div>
+
+            <!-- URL 编码 -->
+            <div class="tool-card" data-tool="url">
+                <div class="tool-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3 class="tool-title">URL 编码/解码</h3>
+                <p class="tool-description">
+                    对URL进行编码和解码操作
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">URL</span>
+                    <span class="tag">编码</span>
+                </div>
+            </div>
+
+            <!-- 二进制转换 -->
+            <div class="tool-card" data-tool="binary">
+                <div class="tool-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <h3 class="tool-title">二进制转换</h3>
+                <p class="tool-description">
+                    文本与二进制之间的相互转换
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">二进制</span>
+                    <span class="tag">转换</span>
+                </div>
+            </div>
+
+            <!-- JSON 格式化 -->
+            <div class="tool-card" data-tool="json">
+                <div class="tool-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3 class="tool-title">JSON 格式化</h3>
+                <p class="tool-description">
+                    格式化和验证JSON数据
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">JSON</span>
+                    <span class="tag">格式化</span>
+                </div>
+            </div>
+
+            <!-- 正则表达式 -->
+            <div class="tool-card" data-tool="regex">
+                <div class="tool-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3 class="tool-title">正则表达式测试</h3>
+                <p class="tool-description">
+                    测试和验证正则表达式
+                </p>
+                <div class="tool-tags">
+                    <span class="tag">正则</span>
+                    <span class="tag">测试</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具使用提示 -->
+        <div class="tools-tips">
+            <div class="tips-card">
+                <h3><i class="fas fa-lightbulb"></i> 使用提示</h3>
+                <ul>
+                    <li>点击任意工具卡片开始使用</li>
+                    <li>所有工具都在本地运行，数据不会上传到服务器</li>
+                    <li>建议将此页面添加到书签，方便快速访问</li>
+                    <li>工具会记住你的上次输入（本地存储）</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 工具模态框容器 -->
+<div id="tool-modals-container"></div>
+
+<style>
+    .tools-page {
+        padding: 2rem 0;
+        min-height: calc(100vh - 140px);
+    }
+
+    .tools-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb-link {
+        color: var(--text-secondary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition-fast);
+    }
+
+    .breadcrumb-link:hover {
+        color: var(--accent-blue);
+    }
+
+    .breadcrumb-separator {
+        margin: 0 0.5rem;
+        color: var(--text-muted);
+    }
+
+    .tools-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .tools-description {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .tool-card {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tool-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(122, 162, 247, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .tool-card:hover::before {
+        left: 100%;
+    }
+
+    .tool-card:hover {
+        border-color: var(--accent-blue);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(122, 162, 247, 0.2);
+    }
+
+    .tool-icon {
+        font-size: 3rem;
+        color: var(--accent-blue);
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .tool-card:hover .tool-icon {
+        color: var(--accent-purple);
+        transform: scale(1.1);
+    }
+
+    .tool-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .tool-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .tool-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .tag {
+        background: rgba(122, 162, 247, 0.1);
+        color: var(--accent-blue);
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: 1px solid var(--accent-blue);
+    }
+
+    .tools-tips {
+        margin-top: 3rem;
+    }
+
+    .tips-card {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        padding: 2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .tips-card h3 {
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .tips-card ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .tips-card li {
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .tips-card li::before {
+        content: '•';
+        color: var(--accent-blue);
+        position: absolute;
+        left: 0;
+        font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+        .tools-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .tool-card {
+            padding: 1.5rem;
+        }
+
+        .tools-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tools.css') }}">
+<script src="{{ url_for('static', filename='js/tools.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block title %}注册 - Neon CTF{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="auth-wrapper">
+            <div class="auth-visual">
+                <div class="auth-illustration">
+                    <div class="cyber-shield">
+                        <div class="shield-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="data-streams">
+                            <div class="stream stream-1"></div>
+                            <div class="stream stream-2"></div>
+                            <div class="stream stream-3"></div>
+                            <div class="stream stream-4"></div>
+                        </div>
+                    </div>
+                    <h2 class="auth-visual-title">加入战队</h2>
+                    <p class="auth-visual-subtitle">成为Neon CTF的一员</p>
+                </div>
+            </div>
+
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h1 class="auth-title">
+                        <span class="neon-text">创建账户</span>
+                    </h1>
+                    <p class="auth-subtitle">开始你的网络安全挑战之旅</p>
+                </div>
+
+                <form method="POST" class="auth-form">
+                    <div class="form-group">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user"></i>
+                            用户名
+                        </label>
+                        <input type="text" id="username" name="username" class="form-input" placeholder="选择一个酷炫的用户名"
+                            required minlength="3" maxlength="20">
+                        <div class="form-hint">3-20个字符，字母、数字、下划线</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope"></i>
+                            邮箱地址
+                        </label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="输入你的邮箱地址" required>
+                        <div class="form-hint">用于账户验证和重要通知</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            密码
+                        </label>
+                        <div class="password-input">
+                            <input type="password" id="password" name="password" class="form-input"
+                                placeholder="创建一个安全的密码" required minlength="6">
+                            <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill"></div>
+                            </div>
+                            <span class="strength-text">密码强度</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm_password" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            确认密码
+                        </label>
+                        <div class="password-input">
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-input"
+                                placeholder="再次输入密码" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="password-match">
+                            <i class="fas fa-check-circle"></i>
+                            <span>密码匹配</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" class="checkbox-input" required>
+                            <span class="checkbox-custom"></span>
+                            我已阅读并同意
+                            <a href="#" class="auth-link">服务条款</a>
+                            和
+                            <a href="#" class="auth-link">隐私政策</a>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-rocket"></i>
+                            创建账户
+                        </button>
+                    </div>
+                </form>
+
+                <div class="auth-footer">
+                    <p class="auth-link-text">
+                        已有账户？
+                        <a href="{{ url_for('login') }}" class="auth-link">立即登录</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Extend login styles */
+    .cyber-shield {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+
+    .shield-icon {
+        font-size: 4rem;
+        color: var(--accent-green);
+        text-shadow: 0 0 20px var(--accent-green);
+        position: relative;
+        z-index: 2;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .data-streams {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .stream {
+        position: absolute;
+        width: 2px;
+        height: 40px;
+        background: linear-gradient(to bottom, transparent, var(--accent-blue), transparent);
+        animation: stream-flow 2s ease-in-out infinite;
+    }
+
+    .stream-1 {
+        top: -60px;
+        left: -30px;
+        animation-delay: 0s;
+    }
+
+    .stream-2 {
+        top: -60px;
+        right: -30px;
+        animation-delay: 0.5s;
+    }
+
+    .stream-3 {
+        bottom: -60px;
+        left: -30px;
+        animation-delay: 1s;
+    }
+
+    .stream-4 {
+        bottom: -60px;
+        right: -30px;
+        animation-delay: 1.5s;
+    }
+
+    @keyframes stream-flow {
+
+        0%,
+        100% {
+            opacity: 0.3;
+            transform: translateY(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: translateY(-10px);
+        }
+    }
+
+    .form-hint {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .strength-bar {
+        flex: 1;
+        height: 4px;
+        background: var(--bg-tertiary);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent-red), var(--accent-orange), var(--accent-green));
+        transition: var(--transition-normal);
+    }
+
+    .strength-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        min-width: 60px;
+    }
+
+    .password-match {
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--accent-green);
+        opacity: 0;
+        transition: var(--transition-fast);
+    }
+
+    .password-match.show {
+        opacity: 1;
+    }
+
+    .password-match.error {
+        color: var(--accent-red);
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        cursor: pointer;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+
+    .checkbox-input {
+        display: none;
+    }
+
+    .checkbox-custom {
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--border-primary);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition-fast);
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .checkbox-custom::after {
+        content: '✓';
+        color: white;
+        font-weight: bold;
+        font-size: 0.8rem;
+        opacity: 0;
+        transition: var(--transition-fast);
+    }
+
+    .checkbox-input:checked+.checkbox-custom {
+        background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+        border-color: var(--accent-blue);
+    }
+
+    .checkbox-input:checked+.checkbox-custom::after {
+        opacity: 1;
+    }
+
+    /* Additional animations for registration */
+    @keyframes pulse-data {
+
+        0%,
+        100% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+
+        50% {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+    }
+
+    .cyber-shield:hover .shield-icon {
+        animation: pulse-data 1s ease-in-out infinite;
+    }
+</style>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const toggle = input.nextElementSibling;
+        const icon = toggle.querySelector('i');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        let score = 0;
+        let feedback = [];
+
+        if (password.length >= 8) score += 25;
+        else feedback.push('至少8个字符');
+
+        if (/[a-z]/.test(password)) score += 25;
+        else feedback.push('包含小写字母');
+
+        if (/[A-Z]/.test(password)) score += 25;
+        else feedback.push('包含大写字母');
+
+        if (/[0-9]/.test(password)) score += 25;
+        else feedback.push('包含数字');
+
+        if (/[^A-Za-z0-9]/.test(password)) score += 25;
+        else feedback.push('包含特殊字符');
+
+        return { score: Math.min(score, 100), feedback };
+    }
+
+    function updatePasswordStrength(password) {
+        const { score, feedback } = checkPasswordStrength(password);
+        const strengthFill = document.querySelector('.strength-fill');
+        const strengthText = document.querySelector('.strength-text');
+
+        strengthFill.style.width = score + '%';
+
+        if (score < 30) {
+            strengthText.textContent = '弱';
+            strengthText.style.color = 'var(--accent-red)';
+        } else if (score < 60) {
+            strengthText.textContent = '中等';
+            strengthText.style.color = 'var(--accent-orange)';
+        } else if (score < 90) {
+            strengthText.textContent = '强';
+            strengthText.style.color = 'var(--accent-green)';
+        } else {
+            strengthText.textContent = '极强';
+            strengthText.style.color = 'var(--accent-cyan)';
+        }
+    }
+
+    function checkPasswordMatch() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        const matchIndicator = document.querySelector('.password-match');
+
+        if (confirmPassword.length > 0) {
+            matchIndicator.classList.add('show');
+            if (password === confirmPassword) {
+                matchIndicator.classList.remove('error');
+                matchIndicator.querySelector('span').textContent = '密码匹配';
+                matchIndicator.querySelector('i').className = 'fas fa-check-circle';
+            } else {
+                matchIndicator.classList.add('error');
+                matchIndicator.querySelector('span').textContent = '密码不匹配';
+                matchIndicator.querySelector('i').className = 'fas fa-times-circle';
+            }
+        } else {
+            matchIndicator.classList.remove('show');
+        }
+    }
+
+    // Add event listeners
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+
+        passwordInput.addEventListener('input', function () {
+            updatePasswordStrength(this.value);
+            checkPasswordMatch();
+        });
+
+        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+        // Username validation
+        const usernameInput = document.getElementById('username');
+        usernameInput.addEventListener('input', function () {
+            const username = this.value;
+            const validPattern = /^[a-zA-Z0-9_]+$/;
+
+            if (username && !validPattern.test(username)) {
+                this.setCustomValidity('用户名只能包含字母、数字和下划线');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+
+        // Form submission animation
+        const form = document.querySelector('.auth-form');
+        form.addEventListener('submit', function (e) {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 创建中...';
+            submitBtn.disabled = true;
+        });
+    });
+</script>
+{% endblock %}

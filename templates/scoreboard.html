@@ -1,0 +1,808 @@
+{% extends "base.html" %}
+
+{% block title %}排行榜 - Neon CTF{% endblock %}
+
+{% block content %}
+<div class="scoreboard-container">
+    <div class="container">
+        <!-- Header Section -->
+        <div class="scoreboard-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <span class="neon-text">荣誉</span>
+                    <span class="accent-text">榜单</span>
+                </h1>
+                <p class="page-subtitle">
+                    在霓虹世界中，展现你的网络安全技能排名
+                </p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="scoreboard-stats">
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <span>{{ users|length }} 名参赛者</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-trophy"></i>
+                    <span>竞争激烈</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-clock"></i>
+                    <span>实时更新</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Podium Section -->
+        {% if users|length >= 3 %}
+        <div class="podium-section">
+            <div class="podium">
+                <!-- Second Place -->
+                {% if users|length >= 2 %}
+                <div class="podium-item podium-second">
+                    <div class="podium-rank">
+                        <i class="fas fa-medal silver"></i>
+                        <span class="rank-number">2</span>
+                    </div>
+                    <div class="podium-user">
+                        <div class="user-avatar avatar-silver">
+                            <i class="fas fa-user-ninja"></i>
+                        </div>
+                        <div class="user-name">{{ users[1].username }}</div>
+                        <div class="user-score">{{ users[1].score }} 分</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- First Place -->
+                <div class="podium-item podium-first">
+                    <div class="podium-rank">
+                        <i class="fas fa-crown"></i>
+                        <span class="rank-number">1</span>
+                    </div>
+                    <div class="podium-user">
+                        <div class="user-avatar avatar-gold">
+                            <i class="fas fa-user-ninja"></i>
+                        </div>
+                        <div class="user-name">{{ users[0].username }}</div>
+                        <div class="user-score">{{ users[0].score }} 分</div>
+                    </div>
+                    <div class="winner-effects">
+                        <div class="sparkle sparkle-1"></div>
+                        <div class="sparkle sparkle-2"></div>
+                        <div class="sparkle sparkle-3"></div>
+                    </div>
+                </div>
+
+                <!-- Third Place -->
+                {% if users|length >= 3 %}
+                <div class="podium-item podium-third">
+                    <div class="podium-rank">
+                        <i class="fas fa-medal bronze"></i>
+                        <span class="rank-number">3</span>
+                    </div>
+                    <div class="podium-user">
+                        <div class="user-avatar avatar-bronze">
+                            <i class="fas fa-user-ninja"></i>
+                        </div>
+                        <div class="user-name">{{ users[2].username }}</div>
+                        <div class="user-score">{{ users[2].score }} 分</div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Full Leaderboard -->
+        <div class="leaderboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-list-ol"></i>
+                    完整排行榜
+                </h2>
+                <div class="section-actions">
+                    <button class="btn btn-outline" onclick="refreshLeaderboard()">
+                        <i class="fas fa-sync-alt"></i>
+                        刷新
+                    </button>
+                </div>
+            </div>
+
+            {% if users %}
+            <div class="leaderboard-table-container">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th class="rank-col">排名</th>
+                            <th class="user-col">用户</th>
+                            <th class="score-col">分数</th>
+                            <th class="progress-col">进度</th>
+                            <th class="time-col">最后提交</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr class="leaderboard-row {% if user.id == current_user.id %}current-user{% endif %} {% if loop.index <= 3 %}top-three{% endif %}"
+                            data-rank="{{ loop.index }}">
+                            <td class="rank-cell">
+                                {% if loop.index == 1 %}
+                                <div class="rank-display rank-1">
+                                    <i class="fas fa-crown"></i>
+                                    <span>1</span>
+                                </div>
+                                {% elif loop.index == 2 %}
+                                <div class="rank-display rank-2">
+                                    <i class="fas fa-medal"></i>
+                                    <span>2</span>
+                                </div>
+                                {% elif loop.index == 3 %}
+                                <div class="rank-display rank-3">
+                                    <i class="fas fa-medal"></i>
+                                    <span>3</span>
+                                </div>
+                                {% else %}
+                                <div class="rank-display">
+                                    <span>{{ loop.index }}</span>
+                                </div>
+                                {% endif %}
+                            </td>
+
+                            <td class="user-cell">
+                                <div class="user-info">
+                                    <div class="user-avatar-small">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div class="user-details">
+                                        <div class="username">{{ user.username }}</div>
+                                        {% if user.id == current_user.id %}
+                                        <div class="user-badge">你</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="score-cell">
+                                <div class="score-display">
+                                    <span class="score-value">{{ user.score }}</span>
+                                    <span class="score-unit">分</span>
+                                </div>
+                            </td>
+
+                            <td class="progress-cell">
+                                <div class="progress-info">
+                                    {% set solved_count = user.submissions|selectattr('is_correct')|list|length %}
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"
+                                            style="width: {{ min(solved_count / 50 * 100, 100) }}%"></div>
+                                    </div>
+                                    <span class="progress-text">{{ solved_count }} 题</span>
+                                </div>
+                            </td>
+
+                            <td class="time-cell">
+                                {% if user.last_submit %}
+                                <span class="time-display">{{ user.last_submit.strftime('%m-%d %H:%M') }}</span>
+                                {% else %}
+                                <span class="time-display no-submit">未提交</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="empty-title">暂无排行数据</h3>
+                <p class="empty-description">
+                    还没有用户参与挑战，成为第一个挑战者吧！
+                </p>
+                <a href="{{ url_for('challenges') }}" class="btn btn-primary">
+                    开始挑战
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .scoreboard-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 140px);
+    }
+
+    .scoreboard-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--bg-float) 0%, var(--bg-tertiary) 100%);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .scoreboard-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple), var(--accent-pink));
+    }
+
+    .page-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-family: var(--font-mono);
+    }
+
+    .page-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .scoreboard-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .stat-item i {
+        color: var(--accent-blue);
+    }
+
+    .podium-section {
+        margin-bottom: 4rem;
+        padding: 2rem 0;
+    }
+
+    .podium {
+        display: flex;
+        justify-content: center;
+        align-items: end;
+        gap: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .podium-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        padding: 2rem 1.5rem;
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        transition: var(--transition-normal);
+    }
+
+    .podium-first {
+        order: 2;
+        transform: scale(1.1);
+        border-color: #ffd700;
+        background: linear-gradient(135deg, var(--bg-float) 0%, rgba(255, 215, 0, 0.1) 100%);
+        z-index: 3;
+    }
+
+    .podium-second {
+        order: 1;
+        border-color: #c0c0c0;
+        background: linear-gradient(135deg, var(--bg-float) 0%, rgba(192, 192, 192, 0.1) 100%);
+        z-index: 2;
+    }
+
+    .podium-third {
+        order: 3;
+        border-color: #cd7f32;
+        background: linear-gradient(135deg, var(--bg-float) 0%, rgba(205, 127, 50, 0.1) 100%);
+        z-index: 1;
+    }
+
+    .podium-rank {
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .podium-rank i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .podium-rank .fa-crown {
+        color: #ffd700;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .podium-rank .fa-medal.silver {
+        color: #c0c0c0;
+    }
+
+    .podium-rank .fa-medal.bronze {
+        color: #cd7f32;
+    }
+
+    .rank-number {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: 700;
+        font-family: var(--font-mono);
+        color: white;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .avatar-gold {
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    }
+
+    .avatar-silver {
+        background: linear-gradient(45deg, #c0c0c0, #e5e5e5);
+        box-shadow: 0 0 20px rgba(192, 192, 192, 0.5);
+    }
+
+    .avatar-bronze {
+        background: linear-gradient(45deg, #cd7f32, #d4a574);
+        box-shadow: 0 0 20px rgba(205, 127, 50, 0.5);
+    }
+
+    .user-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .user-score {
+        font-size: 1.5rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        background: linear-gradient(45deg, var(--accent-green), var(--accent-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .winner-effects {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        overflow: hidden;
+        border-radius: 16px;
+    }
+
+    .sparkle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #ffd700;
+        border-radius: 50%;
+        animation: sparkle 2s ease-in-out infinite;
+    }
+
+    .sparkle-1 {
+        top: 20%;
+        left: 20%;
+        animation-delay: 0s;
+    }
+
+    .sparkle-2 {
+        top: 30%;
+        right: 25%;
+        animation-delay: 0.7s;
+    }
+
+    .sparkle-3 {
+        bottom: 25%;
+        left: 30%;
+        animation-delay: 1.4s;
+    }
+
+    @keyframes sparkle {
+
+        0%,
+        100% {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        50% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .leaderboard-section {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background: var(--bg-tertiary);
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .leaderboard-table-container {
+        overflow-x: auto;
+    }
+
+    .leaderboard-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .leaderboard-table th {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        font-weight: 600;
+        border-bottom: 1px solid var(--border-primary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.85rem;
+    }
+
+    .leaderboard-row {
+        transition: var(--transition-fast);
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .leaderboard-row:hover {
+        background: rgba(122, 162, 247, 0.05);
+    }
+
+    .leaderboard-row.current-user {
+        background: rgba(122, 162, 247, 0.1);
+        border-color: var(--accent-blue);
+    }
+
+    .leaderboard-row.top-three {
+        background: rgba(255, 215, 0, 0.03);
+    }
+
+    .leaderboard-table td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+    }
+
+    .rank-display {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+    }
+
+    .rank-1 {
+        color: #ffd700;
+    }
+
+    .rank-2 {
+        color: #c0c0c0;
+    }
+
+    .rank-3 {
+        color: #cd7f32;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .user-avatar-small {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+    }
+
+    .username {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .user-badge {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        background: var(--accent-blue);
+        color: white;
+        border-radius: 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-top: 0.2rem;
+    }
+
+    .score-display {
+        display: flex;
+        align-items: baseline;
+        gap: 0.25rem;
+    }
+
+    .score-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        background: linear-gradient(45deg, var(--accent-green), var(--accent-cyan));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .score-unit {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+
+    .progress-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .progress-bar {
+        width: 80px;
+        height: 6px;
+        background: var(--bg-tertiary);
+        border-radius: 3px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+        border-radius: 3px;
+        transition: var(--transition-normal);
+    }
+
+    .progress-text {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        font-family: var(--font-mono);
+        white-space: nowrap;
+    }
+
+    .time-display {
+        font-family: var(--font-mono);
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .time-display.no-submit {
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-muted);
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+        color: var(--accent-blue);
+        opacity: 0.5;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .empty-description {
+        margin-bottom: 2rem;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .podium {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .podium-item {
+            order: unset !important;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .podium-first {
+            transform: none;
+        }
+
+        .section-header {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 0.75rem;
+        }
+
+        .user-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .progress-info {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .leaderboard-table-container {
+            font-size: 0.9rem;
+        }
+
+        .scoreboard-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .rank-col,
+        .time-col {
+            display: none;
+        }
+    }
+
+    /* Animation for table rows */
+    .leaderboard-row {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .leaderboard-row:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .leaderboard-row:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .leaderboard-row:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+</style>
+
+<script>
+    function refreshLeaderboard() {
+        const refreshBtn = document.querySelector('.section-actions .btn');
+        const originalText = refreshBtn.innerHTML;
+
+        refreshBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 刷新中...';
+        refreshBtn.disabled = true;
+
+        // Simulate refresh
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Animate progress bars
+        const progressBars = document.querySelectorAll('.progress-fill');
+        progressBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 500);
+        });
+
+        // Add periodic refresh (every 30 seconds)
+        setInterval(() => {
+            // Update timestamp display
+            updateTimeDisplays();
+        }, 30000);
+
+        function updateTimeDisplays() {
+            const timeDisplays = document.querySelectorAll('.time-display');
+            timeDisplays.forEach(display => {
+                if (!display.classList.contains('no-submit')) {
+                    // This would update relative time displays
+                    // For now, just add a subtle flash effect
+                    display.style.opacity = '0.5';
+                    setTimeout(() => {
+                        display.style.opacity = '1';
+                    }, 200);
+                }
+            });
+        }
+
+        // Scroll current user into view
+        const currentUserRow = document.querySelector('.leaderboard-row.current-user');
+        if (currentUserRow) {
+            setTimeout(() => {
+                currentUserRow.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 1000);
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'r' && e.ctrlKey) {
+                e.preventDefault();
+                refreshLeaderboard();
+            }
+        });
+    });
+</script>
+{% endblock %}

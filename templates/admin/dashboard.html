@@ -1,0 +1,1141 @@
+{% extends "base.html" %}
+
+{% block title %}管理后台 - Neon CTF{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <div class="container">
+        <!-- Admin Header -->
+        <div class="admin-header">
+            <div class="header-content">
+                <h1 class="page-title">
+                    <i class="fas fa-shield-alt neon-icon"></i>
+                    <span class="neon-text">管理</span>
+                    <span class="accent-text">控制台</span>
+                </h1>
+                <p class="page-subtitle">Neon CTF 平台管理中心</p>
+            </div>
+
+            <div class="admin-actions">
+                <button class="btn btn-primary" onclick="showAddChallengeModal()">
+                    <i class="fas fa-plus"></i>
+                    添加题目
+                </button>
+                <button class="btn btn-outline" onclick="exportData()">
+                    <i class="fas fa-download"></i>
+                    导出数据
+                </button>
+            </div>
+        </div>
+
+        <!-- Admin Stats -->
+        <div class="admin-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_users }}</div>
+                    <div class="stat-label">总用户数</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+12% 本周</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_challenges }}</div>
+                    <div class="stat-label">题目总数</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+3 本月</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_submissions }}</div>
+                    <div class="stat-label">总提交数</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+156 今日</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ correct_submissions }}</div>
+                    <div class="stat-label">正确提交</div>
+                    <div class="stat-trend">
+                        <span class="success-rate">
+                            {% if total_submissions > 0 %}
+                            {{ "%.1f"|format((correct_submissions / total_submissions * 100)) }}% 成功率
+                            {% else %}
+                            0% 成功率
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="overview">
+                    <i class="fas fa-chart-bar"></i>
+                    概览
+                </button>
+                <button class="tab-btn" data-tab="challenges">
+                    <i class="fas fa-flag"></i>
+                    题目管理
+                </button>
+                <button class="tab-btn" data-tab="users">
+                    <i class="fas fa-users"></i>
+                    用户管理
+                </button>
+                <button class="tab-btn" data-tab="settings">
+                    <i class="fas fa-cog"></i>
+                    系统设置
+                </button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Overview Tab -->
+                <div class="tab-panel active" id="overview">
+                    <div class="overview-grid">
+                        <!-- Recent Activity -->
+                        <div class="admin-card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-activity"></i>
+                                    最近活动
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="activity-list">
+                                    <div class="activity-item">
+                                        <div class="activity-icon success">
+                                            <i class="fas fa-flag"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">用户 hacker123 解决了题目 "SQL注入基础"</div>
+                                            <div class="activity-time">2分钟前</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="activity-icon info">
+                                            <i class="fas fa-user-plus"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">新用户 cyber_ninja 注册</div>
+                                            <div class="activity-time">15分钟前</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="activity-item">
+                                        <div class="activity-icon warning">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </div>
+                                        <div class="activity-content">
+                                            <div class="activity-title">题目 "缓冲区溢出" 提交失败率过高</div>
+                                            <div class="activity-time">1小时前</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats Chart -->
+                        <div class="admin-card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    提交趋势
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <canvas id="submissionChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenges Tab -->
+                <div class="tab-panel" id="challenges">
+                    <div class="challenges-management">
+                        <div class="management-header">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索题目..." class="search-input">
+                            </div>
+                            <div class="filter-options">
+                                <select class="filter-select">
+                                    <option value="">所有分类</option>
+                                    <option value="web">Web</option>
+                                    <option value="crypto">Crypto</option>
+                                    <option value="reverse">Reverse</option>
+                                    <option value="pwn">Pwn</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="challenges-table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>题目名称</th>
+                                        <th>分类</th>
+                                        <th>难度</th>
+                                        <th>分数</th>
+                                        <th>状态</th>
+                                        <th>解决人数</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>001</td>
+                                        <td>Welcome to CTF</td>
+                                        <td><span class="category-badge web">Web</span></td>
+                                        <td><span class="difficulty-badge easy">Easy</span></td>
+                                        <td>50</td>
+                                        <td><span class="status-badge active">启用</span></td>
+                                        <td>156</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-sm btn-outline" title="编辑">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-sm btn-danger" title="删除">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- More challenge rows would be generated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Tab -->
+                <div class="tab-panel" id="users">
+                    <div class="users-management">
+                        <div class="management-header">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="搜索用户..." class="search-input">
+                            </div>
+                            <div class="filter-options">
+                                <select class="filter-select">
+                                    <option value="">所有用户</option>
+                                    <option value="admin">管理员</option>
+                                    <option value="user">普通用户</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="users-table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>用户名</th>
+                                        <th>邮箱</th>
+                                        <th>分数</th>
+                                        <th>角色</th>
+                                        <th>注册时间</th>
+                                        <th>最后活动</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>001</td>
+                                        <td>admin</td>
+                                        <td>admin@ctf.local</td>
+                                        <td>0</td>
+                                        <td><span class="role-badge admin">管理员</span></td>
+                                        <td>2024-01-01</td>
+                                        <td>刚刚</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn-sm btn-outline" title="编辑">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-sm btn-warning" title="重置密码">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- More user rows would be generated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-panel" id="settings">
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-globe"></i>
+                                    平台设置
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="setting-item">
+                                    <label class="setting-label">平台名称</label>
+                                    <input type="text" class="form-input" value="Neon CTF">
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">比赛开始时间</label>
+                                    <input type="datetime-local" class="form-input">
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">比赛结束时间</label>
+                                    <input type="datetime-local" class="form-input">
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">允许注册</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-card">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-shield-alt"></i>
+                                    安全设置
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="setting-item">
+                                    <label class="setting-label">密码最小长度</label>
+                                    <input type="number" class="form-input" value="6" min="6" max="20">
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">登录失败限制</label>
+                                    <input type="number" class="form-input" value="5" min="3" max="10">
+                                </div>
+
+                                <div class="setting-item">
+                                    <label class="setting-label">启用验证码</label>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Challenge Modal -->
+<div class="modal" id="addChallengeModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">添加新题目</h3>
+            <button class="modal-close" onclick="closeModal('addChallengeModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="challenge-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">题目标题</label>
+                        <input type="text" class="form-input" placeholder="输入题目标题" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">分类</label>
+                        <select class="form-input" required>
+                            <option value="">选择分类</option>
+                            <option value="web">Web</option>
+                            <option value="crypto">Crypto</option>
+                            <option value="reverse">Reverse</option>
+                            <option value="pwn">Pwn</option>
+                            <option value="forensics">Forensics</option>
+                            <option value="misc">Misc</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">难度</label>
+                        <select class="form-input" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">分数</label>
+                        <input type="number" class="form-input" placeholder="100" min="50" max="1000" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">题目描述</label>
+                    <textarea class="form-input form-textarea" rows="6" placeholder="输入题目描述..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Flag</label>
+                    <input type="text" class="form-input" placeholder="flag{...}" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('addChallengeModal')">取消</button>
+            <button class="btn btn-primary">创建题目</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-container {
+        padding: 2rem 0;
+        min-height: calc(100vh - 140px);
+    }
+
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, var(--bg-float) 0%, var(--bg-tertiary) 100%);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .admin-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent-red), var(--accent-orange), var(--accent-green));
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .admin-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: var(--transition-normal);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+        transform: scaleX(0);
+        transition: var(--transition-normal);
+    }
+
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-blue);
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-trend {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.85rem;
+    }
+
+    .stat-trend i {
+        color: var(--accent-green);
+    }
+
+    .stat-trend span {
+        color: var(--text-muted);
+    }
+
+    .success-rate {
+        color: var(--accent-green) !important;
+        font-weight: 600;
+    }
+
+    .admin-tabs {
+        background: var(--bg-float);
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .tab-buttons {
+        display: flex;
+        background: var(--bg-tertiary);
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        background: transparent;
+        border: none;
+        color: var(--text-secondary);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        position: relative;
+    }
+
+    .tab-btn::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--accent-blue);
+        transform: scaleX(0);
+        transition: var(--transition-fast);
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+        color: var(--accent-blue);
+        background: rgba(122, 162, 247, 0.1);
+    }
+
+    .tab-btn.active::after {
+        transform: scaleX(1);
+    }
+
+    .tab-content {
+        padding: 2rem;
+    }
+
+    .tab-panel {
+        display: none;
+    }
+
+    .tab-panel.active {
+        display: block;
+    }
+
+    .overview-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .admin-card {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 1.5rem;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-content {
+        padding: 1.5rem;
+    }
+
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .activity-icon.success {
+        background: var(--accent-green);
+    }
+
+    .activity-icon.info {
+        background: var(--accent-blue);
+    }
+
+    .activity-icon.warning {
+        background: var(--accent-orange);
+    }
+
+    .activity-title {
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+    .management-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        gap: 1rem;
+    }
+
+    .search-box {
+        position: relative;
+        flex: 1;
+        max-width: 400px;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 3rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        color: var(--text-primary);
+    }
+
+    .filter-select {
+        padding: 0.75rem 1rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 8px;
+        color: var(--text-primary);
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--bg-tertiary);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .admin-table th {
+        padding: 1rem;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-weight: 600;
+        text-align: left;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .admin-table td {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-primary);
+        color: var(--text-secondary);
+    }
+
+    .admin-table tr:hover {
+        background: rgba(122, 162, 247, 0.05);
+    }
+
+    .category-badge,
+    .difficulty-badge,
+    .status-badge,
+    .role-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .category-badge.web {
+        background: rgba(122, 162, 247, 0.2);
+        color: var(--accent-blue);
+    }
+
+    .difficulty-badge.easy {
+        background: rgba(158, 206, 106, 0.2);
+        color: var(--accent-green);
+    }
+
+    .status-badge.active {
+        background: rgba(158, 206, 106, 0.2);
+        color: var(--accent-green);
+    }
+
+    .role-badge.admin {
+        background: rgba(247, 118, 142, 0.2);
+        color: var(--accent-red);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid var(--border-primary);
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: var(--transition-fast);
+    }
+
+    .btn-sm:hover {
+        color: var(--accent-blue);
+        border-color: var(--accent-blue);
+    }
+
+    .btn-sm.btn-danger:hover {
+        color: var(--accent-red);
+        border-color: var(--accent-red);
+    }
+
+    .btn-sm.btn-warning:hover {
+        color: var(--accent-orange);
+        border-color: var(--accent-orange);
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 2rem;
+    }
+
+    .settings-card {
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-primary);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-primary);
+    }
+
+    .setting-item:last-child {
+        border-bottom: none;
+    }
+
+    .setting-label {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    .toggle-switch {
+        position: relative;
+        width: 50px;
+        height: 24px;
+    }
+
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--bg-primary);
+        border: 1px solid var(--border-primary);
+        border-radius: 24px;
+        transition: var(--transition-fast);
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: '';
+        height: 18px;
+        width: 18px;
+        left: 2px;
+        bottom: 2px;
+        background-color: var(--text-secondary);
+        border-radius: 50%;
+        transition: var(--transition-fast);
+    }
+
+    input:checked+.toggle-slider {
+        background-color: var(--accent-blue);
+        border-color: var(--accent-blue);
+    }
+
+    input:checked+.toggle-slider:before {
+        transform: translateX(26px);
+        background-color: white;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: var(--bg-float);
+        margin: 5% auto;
+        border: 1px solid var(--border-primary);
+        border-radius: 16px;
+        width: 90%;
+        max-width: 600px;
+        animation: modalSlide 0.3s ease;
+    }
+
+    @keyframes modalSlide {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--border-primary);
+        background: var(--bg-tertiary);
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 6px;
+        transition: var(--transition-fast);
+    }
+
+    .modal-close:hover {
+        color: var(--accent-red);
+        background: rgba(247, 118, 142, 0.1);
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        border-top: 1px solid var(--border-primary);
+        background: var(--bg-tertiary);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .admin-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .admin-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .tab-buttons {
+            flex-direction: column;
+        }
+
+        .overview-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .management-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .settings-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Tab functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetTab = this.dataset.tab;
+
+                // Remove active class from all buttons and panels
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanels.forEach(panel => panel.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding panel
+                this.classList.add('active');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // Initialize chart
+        initSubmissionChart();
+
+        // Animate stats
+        animateStats();
+    });
+
+    function showAddChallengeModal() {
+        document.getElementById('addChallengeModal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function exportData() {
+        // Simulate data export
+        window.CTF.showNotification('数据导出功能开发中...', 'info');
+    }
+
+    function initSubmissionChart() {
+        const canvas = document.getElementById('submissionChart');
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+
+        // Sample data for submission trends
+        const data = [45, 52, 68, 84, 72, 91, 105];
+        const labels = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+
+        // Draw chart
+        ctx.strokeStyle = '#7aa2f7';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        data.forEach((value, index) => {
+            const x = (index / (data.length - 1)) * (width - 40) + 20;
+            const y = height - 20 - (value / 120) * (height - 40);
+
+            if (index === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+
+            // Draw data points
+            ctx.save();
+            ctx.fillStyle = '#7aa2f7';
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        ctx.stroke();
+
+        // Draw labels
+        ctx.fillStyle = '#a9b1d6';
+        ctx.font = '12px Inter';
+        ctx.textAlign = 'center';
+
+        labels.forEach((label, index) => {
+            const x = (index / (labels.length - 1)) * (width - 40) + 20;
+            ctx.fillText(label, x, height - 5);
+        });
+    }
+
+    function animateStats() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+
+        statNumbers.forEach(stat => {
+            const finalValue = parseInt(stat.textContent);
+            let currentValue = 0;
+            const increment = finalValue / 50;
+
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    currentValue = finalValue;
+                    clearInterval(timer);
+                }
+                stat.textContent = Math.floor(currentValue);
+            }, 40);
+        });
+    }
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function (event) {
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %}
