@@ -247,9 +247,4 @@ CREATE TABLE `users`  (
   UNIQUE INDEX `email`(`email` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
--- ----------------------------
--- Records of users
--- ----------------------------
-INSERT INTO `users` VALUES (1, 'admin', 'admin@ctf.com', 'scrypt:32768:8:1$zNA8gRQL49I49R2w$69da8d36c9a2d83f898ef580a012f5e932117e9bc3ca8f621f5f35e03a98117049649afdc3eb64c04e41fa576bf48621395c355e1354134b7ddf5321a8bf9e52', 1, 0, '2025-07-15 14:34:10', '2025-07-15 14:34:10');
-
 SET FOREIGN_KEY_CHECKS = 1;

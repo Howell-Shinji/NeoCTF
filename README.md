@@ -512,21 +512,6 @@ tail -f ai_api.log
 - 问题反馈: [GitHub Issues](https://github.com/Howell-Shinji/NeoCTF/issues)
 - 邮箱: Howell-Bear@outlook.com
 
-## 更新日志
-
-### v1.1.0
-- 新增本地AI模型支持（Im-studio）
-- 支持多种AI模型切换
-- 新增局域网AI模型部署功能
-- 完善AI模型管理界面
-- 优化AI响应性能
-
-### v1.0.0
-- 初始版本发布
-- 基础CTF平台功能
-- AI安全助手集成
-- 霓虹夜主题界面
-
 ---
 
 **注意**: 本项目仅用于教育和学习目的，请遵循相关法律法规，不得用于非法用途。AI模型的使用需要遵守相应的服务条款和使用协议。
