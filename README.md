@@ -113,18 +113,18 @@ chmod +x setup.sh
 ### 支持的AI模型
 
 #### 本地模型（推荐使用Im-studio）
-- **Qwen3.0-Local** (默认)
-- **Deepseek-R1-Local**
-- **Qwen2.5-VL-Local** (视觉增强版)
-- **Qwen2.5-Omni-Local** (全能版)
-- **Gemma3-Local**
+- **Gemma3-Local** (google/gemma-3-4b)
+- **Qwen3-Local** (qwen/qwen3-4b)
+- **Deepseek-R1-Local** (deepseek/deepseek-r1-0528-qwen3-8b)
+- **Qwen2.5-Omni-Local** (qwen2.5-omni-3b)
+- **Qwen2.5-VL-Local** (qwen2.5-vl-3b-instruct)
 
 #### 局域网模型
-- **Qwen3.0-LAN**
-- **Deepseek-R1-LAN**
-- **Qwen2.5-VL-LAN**
-- **Qwen2.5-Omni-LAN**
 - **Gemma3-LAN**
+- **Qwen3-LAN**
+- **Deepseek-R1-LAN**
+- **Qwen2.5-Omni-LAN**
+- **Qwen2.5-VL-LAN**
 
 #### 在线API
 - **通义千问API**
@@ -148,20 +148,20 @@ sudo mv im-studio /usr/local/bin/
 #### 2. 启动本地模型服务
 
 ```bash
-# 启动Qwen3.0模型（默认）
-im-studio start qwen3.0 --port 1234
+# 启动Gemma3模型
+im-studio start gemma3 --port 1234
+
+# 启动Qwen3模型
+im-studio start qwen3 --port 1235
 
 # 启动Deepseek-R1模型
-im-studio start deepseek-r1 --port 1235
-
-# 启动Qwen2.5视觉增强版
-im-studio start qwen2.5-vl --port 1236
+im-studio start deepseek --port 1236
 
 # 启动Qwen2.5全能版
-im-studio start qwen2.5-omni --port 1237
+im-studio start qwen2v1 --port 1237
 
-# 启动Gemma3模型
-im-studio start gemma3 --port 1238
+# 启动Qwen2.5视觉增强版
+im-studio start qwen2v1 --port 1238
 ```
 
 #### 3. 配置本地模型URL
@@ -170,11 +170,11 @@ im-studio start gemma3 --port 1238
 
 ```env
 # 本地模型URL（根据实际端口配置）
-LOCAL_QWEN3_URL=http://127.0.0.1:1234/v1/chat/completions
-LOCAL_DEEPSEEK_R1_URL=http://127.0.0.1:1235/v1/chat/completions
-LOCAL_QWEN25_VL_URL=http://127.0.0.1:1236/v1/chat/completions
+LOCAL_GEMMA3_URL=http://127.0.0.1:1234/v1/chat/completions
+LOCAL_QWEN3_URL=http://127.0.0.1:1235/v1/chat/completions
+LOCAL_DEEPSEEK_R1_URL=http://127.0.0.1:1236/v1/chat/completions
 LOCAL_QWEN25_OMNI_URL=http://127.0.0.1:1237/v1/chat/completions
-LOCAL_GEMMA3_URL=http://127.0.0.1:1238/v1/chat/completions
+LOCAL_QWEN25_VL_URL=http://127.0.0.1:1238/v1/chat/completions
 ```
 
 ### 局域网AI部署
@@ -200,11 +200,11 @@ sudo ufw allow 1238
 
 ```env
 # 局域网模型URL（根据实际IP和端口配置）
-LAN_QWEN3_URL=http://192.168.1.108:1234/v1/chat/completions
-LAN_DEEPSEEK_R1_URL=http://192.168.1.108:1235/v1/chat/completions
-LAN_QWEN25_VL_URL=http://192.168.1.108:1236/v1/chat/completions
+LAN_GEMMA3_URL=http://192.168.1.108:1234/v1/chat/completions
+LAN_QWEN3_URL=http://192.168.1.108:1235/v1/chat/completions
+LAN_DEEPSEEK_R1_URL=http://192.168.1.108:1236/v1/chat/completions
 LAN_QWEN25_OMNI_URL=http://192.168.1.108:1237/v1/chat/completions
-LAN_GEMMA3_URL=http://192.168.1.108:1238/v1/chat/completions
+LAN_QWEN25_VL_URL=http://192.168.1.108:1238/v1/chat/completions
 ```
 
 ### 在线API配置
@@ -260,7 +260,7 @@ UPLOAD_FOLDER = 'uploads'
 MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50MB
 
 # AI模型配置
-DEFAULT_AI_MODEL = 'Qwen3.0-Local'  # 默认使用本地Qwen3.0模型
+DEFAULT_AI_MODEL = 'Qwen3-Local'  # 默认使用本地Qwen3模型
 AI_REQUEST_TIMEOUT = 30  # AI请求超时时间（秒）
 AI_MAX_RETRIES = 3  # AI请求最大重试次数
 ```
@@ -274,7 +274,7 @@ AI_MAX_RETRIES = 3  # AI请求最大重试次数
    - 密码: `admin123`
 
 2. **AI模型管理**
-   - 访问 `/admin/ai-models` 管理AI模型配置
+   - 访问 `/admin_ai` 管理AI模型配置
    - 配置本地模型服务地址
    - 设置API密钥和访问参数
    - 监控模型服务状态
@@ -290,7 +290,7 @@ AI_MAX_RETRIES = 3  # AI请求最大重试次数
    - 查看用户详细信息
 
 5. **AI管理面板**
-   - 访问 `/admin_ai` 查看AI功能统计
+   - 访问 `/ai_arena` 查看AI功能统计
    - 管理攻击模拟和防御策略
    - 监控AI模型使用情况
 
@@ -440,8 +440,8 @@ docker-compose up -d
 
 4. **本地AI模型无响应**
    - 检查Im-studio服务状态: `im-studio status`
-   - 重启模型服务: `im-studio restart qwen3.0`
-   - 查看服务日志: `im-studio logs qwen3.0`
+   - 重启模型服务: `im-studio restart qwen3`
+   - 查看服务日志: `im-studio logs qwen3`
    - 检查系统资源使用情况
 
 5. **局域网AI模型连接失败**
@@ -465,7 +465,7 @@ AI_DEBUG = True  # 显示AI API调用详情
 
 ```bash
 # 查看Im-studio日志
-im-studio logs qwen3.0
+im-studio logs qwen3
 
 # 查看应用日志
 tail -f app.log
@@ -479,15 +479,16 @@ tail -f ai_api.log
 ### AI模型优化
 
 1. **模型选择建议**
-   - 轻量级任务: Gemma3-Local
-   - 通用任务: Qwen3.0-Local（默认）
-   - 复杂推理: Deepseek-R1-Local
-   - 多模态任务: Qwen2.5-VL-Local
+   - 轻量级任务: Gemma3-Local (4B参数)
+   - 通用任务: Qwen3-Local (4B参数，推荐)
+   - 复杂推理: Deepseek-R1-Local (8B参数)
+   - 多模态任务: Qwen2.5-VL-Local (视觉增强版)
+   - 全能任务: Qwen2.5-Omni-Local (全能版)
 
 2. **资源配置建议**
-   - 最小配置: 8GB RAM, 4核CPU
-   - 推荐配置: 16GB RAM, 8核CPU
-   - 高性能配置: 32GB RAM, 16核CPU, GPU支持
+   - 4B模型: 8GB RAM, 4核CPU
+   - 8B模型: 16GB RAM, 8核CPU
+   - 推荐配置: 32GB RAM, 16核CPU, GPU支持
 
 3. **缓存策略**
    - 启用Redis缓存AI响应

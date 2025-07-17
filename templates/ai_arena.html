@@ -20,13 +20,15 @@
                             <select class="form-select" id="challengeSelect" required>
                                 <option value="" selected disabled>-- 选择挑战 --</option>
                                 {% for challenge in challenges %}
-                                <option value="{{ challenge.id }}">{{ challenge.title }} ({{ challenge.difficulty }})</option>
+                                <option value="{{ challenge.id }}">{{ challenge.title }} ({{ challenge.difficulty }})
+                                </option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="attackQuestion" class="form-label">你的问题或需求</label>
-                            <textarea class="form-control" id="attackQuestion" rows="3" placeholder="例如：我该如何分析这个挑战的漏洞？请给我一些攻击思路..."></textarea>
+                            <textarea class="form-control" id="attackQuestion" rows="3"
+                                placeholder="例如：我该如何分析这个挑战的漏洞？请给我一些攻击思路..."></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="attackModelOption" class="form-label">选择模型</label>
@@ -55,7 +57,7 @@
                     </form>
                 </div>
             </div>
-            
+
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-gradient-success text-white">
                     <h5 class="mb-0"><i class="fas fa-shield-alt"></i> AI防御助手</h5>
@@ -64,11 +66,13 @@
                     <form id="defenseAssistantForm">
                         <div class="mb-3">
                             <label for="vulnerabilityDescription" class="form-label">描述漏洞或攻击场景</label>
-                            <textarea class="form-control" id="vulnerabilityDescription" rows="3" placeholder="例如：我发现了一个SQL注入漏洞，攻击者可以通过输入特殊字符绕过登录..."></textarea>
+                            <textarea class="form-control" id="vulnerabilityDescription" rows="3"
+                                placeholder="例如：我发现了一个SQL注入漏洞，攻击者可以通过输入特殊字符绕过登录..."></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="defenseQuestion" class="form-label">你的防御问题</label>
-                            <textarea class="form-control" id="defenseQuestion" rows="2" placeholder="例如：如何修复这个漏洞并防止类似攻击？"></textarea>
+                            <textarea class="form-control" id="defenseQuestion" rows="2"
+                                placeholder="例如：如何修复这个漏洞并防止类似攻击？"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="defenseModelOption" class="form-label">选择模型</label>
@@ -98,7 +102,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-gradient-info text-white">
@@ -127,7 +131,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="learningQuestion" class="form-label">你想学习什么？</label>
-                        <textarea class="form-control" id="learningQuestion" rows="3" placeholder="例如：我想了解XSS攻击的不同类型及防御方法..."></textarea>
+                        <textarea class="form-control" id="learningQuestion" rows="3"
+                            placeholder="例如：我想了解XSS攻击的不同类型及防御方法..."></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="learningModelOption" class="form-label">选择模型</label>
@@ -155,17 +160,298 @@
                     <button type="button" id="learningBtn" class="btn btn-info w-100">获取学习资料</button>
                 </div>
             </div>
-            
+
             <div class="card border-0 shadow-sm mt-4">
                 <div class="card-header bg-dark text-white">
                     <h5 class="mb-0"><i class="fas fa-terminal"></i> AI响应</h5>
                 </div>
                 <div class="card-body">
                     <div class="position-relative">
-                        <pre id="aiOutput" class="bg-dark text-light p-3 rounded" style="height: 400px; overflow-y: auto;">AI助手已准备就绪，请在左侧面板提交你的问题...</pre>
-                        <button id="copyOutputBtn" class="btn btn-sm btn-light position-absolute top-0 end-0 m-2" title="复制结果">
+                        <pre id="aiOutput" class="bg-dark text-light p-3 rounded"
+                            style="height: 400px; overflow-y: auto;">AI助手已准备就绪，请在左侧面板提交你的问题...</pre>
+                        <button id="copyOutputBtn" class="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
+                            title="复制结果">
                             <i class="fas fa-copy"></i>
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI自动攻防演练系统 -->
+    <h2 class="mt-5 mb-4 text-center">AI自动攻防演练系统</h2>
+    <p class="text-center mb-4">基于生成式AI的自动攻防闭环系统，提供动态场景生成、智能攻击模拟、自适应防御决策和能力评估</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-sitemap"></i> APT攻击链模拟</h5>
+                </div>
+                <div class="card-body">
+                    <form id="aptAttackForm">
+                        <div class="mb-3">
+                            <label for="targetSystemInfo" class="form-label">目标系统信息</label>
+                            <textarea class="form-control" id="targetSystemInfo" rows="3"
+                                placeholder="描述目标系统的架构、组件、版本等信息..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">选择攻击阶段</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="侦察" id="phase1" checked>
+                                <label class="form-check-label" for="phase1">侦察</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="武器构建" id="phase2" checked>
+                                <label class="form-check-label" for="phase2">武器构建</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="投递" id="phase3" checked>
+                                <label class="form-check-label" for="phase3">投递</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="漏洞利用" id="phase4" checked>
+                                <label class="form-check-label" for="phase4">漏洞利用</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="安装" id="phase5" checked>
+                                <label class="form-check-label" for="phase5">安装</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="命令控制" id="phase6" checked>
+                                <label class="form-check-label" for="phase6">命令控制</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="横向移动" id="phase7" checked>
+                                <label class="form-check-label" for="phase7">横向移动</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="数据窃取" id="phase8" checked>
+                                <label class="form-check-label" for="phase8">数据窃取</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="aptModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="aptModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">开始APT攻击模拟</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient-warning text-white">
+                    <h5 class="mb-0"><i class="fas fa-user-secret"></i> 社会工程学攻击模拟</h5>
+                </div>
+                <div class="card-body">
+                    <form id="socialEngineeringForm">
+                        <div class="mb-3">
+                            <label for="targetInfo" class="form-label">目标信息</label>
+                            <textarea class="form-control" id="targetInfo" rows="3"
+                                placeholder="描述目标组织或个人的相关信息..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="attackType" class="form-label">攻击类型</label>
+                            <select class="form-select" id="attackType">
+                                <option value="钓鱼邮件" selected>钓鱼邮件</option>
+                                <option value="假冒网站">假冒网站</option>
+                                <option value="电话诈骗">电话诈骗</option>
+                                <option value="鱼叉式钓鱼">鱼叉式钓鱼</option>
+                                <option value="水坑攻击">水坑攻击</option>
+                                <option value="社交媒体操纵">社交媒体操纵</option>
+                                <option value="物理社工">物理社工</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="socialModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="socialModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">开始社会工程学攻击模拟</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-gradient-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt"></i> 自适应防御策略生成</h5>
+                </div>
+                <div class="card-body">
+                    <form id="adaptiveDefenseForm">
+                        <div class="mb-3">
+                            <label for="attackData" class="form-label">攻击数据</label>
+                            <textarea class="form-control" id="attackData" rows="3"
+                                placeholder="描述攻击情况、攻击类型和攻击路径..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="systemConfig" class="form-label">系统配置 (可选)</label>
+                            <textarea class="form-control" id="systemConfig" rows="2"
+                                placeholder="描述系统的配置、架构和安全措施..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defenseModelOption2" class="form-label">选择模型</label>
+                            <select class="form-select" id="defenseModelOption2">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">生成自适应防御策略</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> 攻防演练评估</h5>
+                </div>
+                <div class="card-body">
+                    <form id="evaluationForm">
+                        <div class="mb-3">
+                            <p class="text-muted">生成攻防演练的综合评估报告，分析攻击效果、防御有效性和整体安全态势。</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="simulationSelect" class="form-label">选择攻击模拟</label>
+                            <select class="form-select" id="simulationSelect">
+                                <option value="" selected disabled>-- 选择攻击模拟 --</option>
+                                {% for sim in simulations %}
+                                <option value="{{ sim.id }}">{{ sim.attack_type }} - {{
+                                    sim.created_at.strftime('%Y-%m-%d %H:%M') }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defenseSelect" class="form-label">选择防御策略</label>
+                            <select class="form-select" id="defenseSelect">
+                                <option value="" selected disabled>-- 选择防御策略 --</option>
+                                {% for defense in defense_strategies %}
+                                <option value="{{ defense.id }}">{{ defense.defense_level }} - {{
+                                    defense.created_at.strftime('%Y-%m-%d %H:%M') }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="evalModelOption" class="form-label">选择模型</label>
+                            <select class="form-select" id="evalModelOption">
+                                <optgroup label="API模型">
+                                    <option value="Deepseek-R1">Deepseek-R1</option>
+                                    <option value="Qwen">Qwen2.5-14B</option>
+                                </optgroup>
+                                <optgroup label="本地模型">
+                                    <option value="Qwen3.0-Local" selected>Qwen3.0-Local (默认)</option>
+                                    <option value="Deepseek-R1-Local">Deepseek-R1-Local</option>
+                                    <option value="Qwen2.5-VL-Local">Qwen2.5-VL-Local</option>
+                                    <option value="Qwen2.5-Omni-Local">Qwen2.5-Omni-Local</option>
+                                    <option value="Gemma3-Local">Gemma3-Local</option>
+                                </optgroup>
+                                <optgroup label="局域网模型">
+                                    <option value="Qwen3.0-LAN">Qwen3.0-LAN</option>
+                                    <option value="Deepseek-R1-LAN">Deepseek-R1-LAN</option>
+                                    <option value="Qwen2.5-VL-LAN">Qwen2.5-VL-LAN</option>
+                                    <option value="Qwen2.5-Omni-LAN">Qwen2.5-Omni-LAN</option>
+                                    <option value="Gemma3-LAN">Gemma3-LAN</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">生成评估报告</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果显示区域 -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="fas fa-terminal"></i> 演练结果</h5>
+                </div>
+                <div class="card-body">
+                    <div class="position-relative">
+                        <pre id="resultOutput" class="bg-dark text-light p-3 rounded"
+                            style="height: 500px; overflow-y: auto;">自动攻防演练系统已就绪，请选择要执行的操作...</pre>
+                        <button id="copyResultBtn" class="btn btn-sm btn-light position-absolute top-0 end-0 m-2"
+                            title="复制结果">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 攻防演练流程图 -->
+    <div class="row mt-4 mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-project-diagram"></i> 攻防演练闭环流程</h5>
+                </div>
+                <div class="card-body">
+                    <div class="diagram-container">
+                        <div class="svg-container">
+                            <object type="image/svg+xml"
+                                data="{{ url_for('static', filename='img/attack_defense_loop.svg') }}" width="800"
+                                height="500">
+                                您的浏览器不支持SVG
+                            </object>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -174,139 +460,317 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 攻击助手表单提交
-    document.getElementById('attackAssistantForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const challengeId = document.getElementById('challengeSelect').value;
-        const question = document.getElementById('attackQuestion').value;
-        const modelOption = document.getElementById('attackModelOption').value;
-        
-        if (!challengeId || !question) {
-            showOutput('请选择挑战并输入你的问题');
-            return;
-        }
-        
-        showOutput('正在分析你的问题，请稍候...');
-        
-        fetch('/api/suggest_solution/' + challengeId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                partial_solution: question,
-                model_option: modelOption
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showOutput(data.suggestion.solution_suggestion);
-            } else {
-                showOutput('获取攻击建议失败: ' + data.message);
+    document.addEventListener('DOMContentLoaded', function () {
+        // 攻击助手表单提交
+        document.getElementById('attackAssistantForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const challengeId = document.getElementById('challengeSelect').value;
+            const question = document.getElementById('attackQuestion').value;
+            const modelOption = document.getElementById('attackModelOption').value;
+
+            if (!challengeId || !question) {
+                showOutput('请选择挑战并输入你的问题');
+                return;
             }
-        })
-        .catch(error => {
-            showOutput('请求错误: ' + error);
-        });
-    });
-    
-    // 防御助手表单提交
-    document.getElementById('defenseAssistantForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const vulnerability = document.getElementById('vulnerabilityDescription').value;
-        const question = document.getElementById('defenseQuestion').value;
-        const modelOption = document.getElementById('defenseModelOption').value;
-        
-        if (!vulnerability || !question) {
-            showOutput('请描述漏洞场景并输入你的防御问题');
-            return;
-        }
-        
-        showOutput('正在分析防御策略，请稍候...');
-        
-        fetch('/api/user_defense_advice', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                vulnerability: vulnerability,
-                question: question,
-                model_option: modelOption
+
+            showOutput('正在分析你的问题，请稍候...');
+
+            fetch('/api/suggest_solution/' + challengeId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    partial_solution: question,
+                    model_option: modelOption
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showOutput(data.defense_advice);
-            } else {
-                showOutput('获取防御建议失败: ' + data.message);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showOutput(data.suggestion.solution_suggestion);
+                    } else {
+                        showOutput('获取攻击建议失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showOutput('请求错误: ' + error);
+                });
+        });
+
+        // 防御助手表单提交
+        document.getElementById('defenseAssistantForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const vulnerability = document.getElementById('vulnerabilityDescription').value;
+            const question = document.getElementById('defenseQuestion').value;
+            const modelOption = document.getElementById('defenseModelOption').value;
+
+            if (!vulnerability || !question) {
+                showOutput('请描述漏洞场景并输入你的防御问题');
+                return;
             }
-        })
-        .catch(error => {
-            showOutput('请求错误: ' + error);
-        });
-    });
-    
-    // 学习助手按钮点击
-    document.getElementById('learningBtn').addEventListener('click', function() {
-        const topic = document.getElementById('securityTopic').value;
-        const level = document.getElementById('skillLevel').value;
-        const question = document.getElementById('learningQuestion').value;
-        const modelOption = document.getElementById('learningModelOption').value;
-        
-        if (!topic || !question) {
-            showOutput('请选择学习主题并输入你的问题');
-            return;
-        }
-        
-        showOutput('正在生成学习资料，请稍候...');
-        
-        fetch('/api/security_learning', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                topic: topic,
-                skill_level: level,
-                question: question,
-                model_option: modelOption
+
+            showOutput('正在分析防御策略，请稍候...');
+
+            fetch('/api/user_defense_advice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    vulnerability: vulnerability,
+                    question: question,
+                    model_option: modelOption
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showOutput(data.learning_material);
-            } else {
-                showOutput('获取学习资料失败: ' + data.message);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showOutput(data.defense_advice);
+                    } else {
+                        showOutput('获取防御建议失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showOutput('请求错误: ' + error);
+                });
+        });
+
+        // 学习助手按钮点击
+        document.getElementById('learningBtn').addEventListener('click', function () {
+            const topic = document.getElementById('securityTopic').value;
+            const level = document.getElementById('skillLevel').value;
+            const question = document.getElementById('learningQuestion').value;
+            const modelOption = document.getElementById('learningModelOption').value;
+
+            if (!topic || !question) {
+                showOutput('请选择学习主题并输入你的问题');
+                return;
             }
-        })
-        .catch(error => {
-            showOutput('请求错误: ' + error);
-        });
-    });
-    
-    // 复制按钮点击
-    document.getElementById('copyOutputBtn').addEventListener('click', function() {
-        const outputText = document.getElementById('aiOutput').textContent;
-        navigator.clipboard.writeText(outputText)
-            .then(() => {
-                alert('已复制到剪贴板！');
+
+            showOutput('正在生成学习资料，请稍候...');
+
+            fetch('/api/security_learning', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    topic: topic,
+                    skill_level: level,
+                    question: question,
+                    model_option: modelOption
+                })
             })
-            .catch(err => {
-                console.error('复制失败:', err);
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showOutput(data.learning_material);
+                    } else {
+                        showOutput('获取学习资料失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showOutput('请求错误: ' + error);
+                });
+        });
+
+        // 复制按钮点击
+        document.getElementById('copyOutputBtn').addEventListener('click', function () {
+            const outputText = document.getElementById('aiOutput').textContent;
+            navigator.clipboard.writeText(outputText)
+                .then(() => {
+                    alert('已复制到剪贴板！');
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                });
+        });
+
+        // APT攻击链模拟表单提交
+        document.getElementById('aptAttackForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const targetInfo = document.getElementById('targetSystemInfo').value;
+            if (!targetInfo) {
+                showResult('请提供目标系统信息');
+                return;
+            }
+
+            // 获取选中的攻击阶段
+            const attackPhases = [];
+            document.querySelectorAll('input[type=checkbox]:checked').forEach(function (checkbox) {
+                attackPhases.push(checkbox.value);
             });
+
+            const modelOption = document.getElementById('aptModelOption').value;
+
+            showResult('正在模拟APT攻击链，请稍候...');
+
+            fetch('/api/simulate_apt_attack', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    target_info: targetInfo,
+                    attack_phases: attackPhases,
+                    model_option: modelOption
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showResult(data.simulation.result);
+                    } else {
+                        showResult('APT攻击模拟失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showResult('请求错误: ' + error);
+                });
+        });
+
+        // 社会工程学攻击模拟表单提交
+        document.getElementById('socialEngineeringForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const targetInfo = document.getElementById('targetInfo').value;
+            if (!targetInfo) {
+                showResult('请提供目标信息');
+                return;
+            }
+
+            const attackType = document.getElementById('attackType').value;
+            const modelOption = document.getElementById('socialModelOption').value;
+
+            showResult('正在模拟社会工程学攻击，请稍候...');
+
+            fetch('/api/simulate_social_engineering', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    target_info: targetInfo,
+                    attack_type: attackType,
+                    model_option: modelOption
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showResult(data.simulation.result);
+                    } else {
+                        showResult('社会工程学攻击模拟失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showResult('请求错误: ' + error);
+                });
+        });
+
+        // 自适应防御策略表单提交
+        document.getElementById('adaptiveDefenseForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const attackData = document.getElementById('attackData').value;
+            if (!attackData) {
+                showResult('请提供攻击数据');
+                return;
+            }
+
+            const systemConfig = document.getElementById('systemConfig').value;
+            const modelOption = document.getElementById('defenseModelOption2').value;
+
+            showResult('正在生成自适应防御策略，请稍候...');
+
+            fetch('/api/generate_adaptive_defense', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    attack_data: attackData,
+                    system_config: systemConfig,
+                    model_option: modelOption
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showResult(data.defense.content);
+                    } else {
+                        showResult('生成自适应防御策略失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showResult('请求错误: ' + error);
+                });
+        });
+
+        // 攻防演练评估表单提交
+        document.getElementById('evaluationForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const simulationId = document.getElementById('simulationSelect').value;
+            const defenseId = document.getElementById('defenseSelect').value;
+            const modelOption = document.getElementById('evalModelOption').value;
+
+            if (!simulationId || !defenseId) {
+                showResult('请选择攻击模拟和防御策略');
+                return;
+            }
+
+            showResult('正在生成攻防演练评估报告，请稍候...');
+
+            // 这里应该调用后端API生成评估报告
+            // 暂时使用evaluate_user API
+            fetch('/api/evaluate_user/' + 1, {  // 使用ID为1的用户作为示例
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model_option: modelOption
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showResult(data.evaluation.evaluation_report);
+                    } else {
+                        showResult('生成评估报告失败: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    showResult('请求错误: ' + error);
+                });
+        });
+
+        // 复制结果按钮
+        document.getElementById('copyResultBtn').addEventListener('click', function () {
+            const resultText = document.getElementById('resultOutput').textContent;
+            navigator.clipboard.writeText(resultText)
+                .then(() => {
+                    alert('已复制到剪贴板！');
+                })
+                .catch(err => {
+                    console.error('复制失败:', err);
+                });
+        });
+
+        // 显示输出
+        function showOutput(text) {
+            document.getElementById('aiOutput').textContent = text;
+        }
+
+        // 显示结果
+        function showResult(text) {
+            document.getElementById('resultOutput').textContent = text;
+        }
     });
-    
-    // 显示输出
-    function showOutput(text) {
-        document.getElementById('aiOutput').textContent = text;
-    }
-});
 </script>
-{% endblock %} 
+{% endblock %}
