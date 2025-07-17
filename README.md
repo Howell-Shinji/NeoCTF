@@ -110,6 +110,8 @@ chmod +x setup.sh
 
 ## AI模型配置
 
+微调过的，针对于网络安全的大模型代码可以前往百度网盘获得：[Lora微调大模型系列](https://pan.baidu.com/s/5k1vPd-0jB5vk4iUPQJJH1g)
+
 ### 支持的AI模型
 
 #### 本地模型（推荐使用Im-studio）
