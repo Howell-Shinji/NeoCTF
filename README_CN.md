@@ -1,5 +1,9 @@
 <div align="center">
-  <h1>NeonCTF</h1>
+  <img src="./background.JPG">
+  
+  <h1>
+    <img src="./logo.JPG" alt="Logo" width="35" height="35" style="vertical-align: center; margin-right: 10px;">NeonCTF
+  </h1>
 
   <p>
     <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
@@ -343,8 +347,7 @@ ctf-platform/
 │   └── *.html          # 页面模板
 ├── uploads/            # 上传文件目录
 └── utils/              # 工具模块
-    ├── ai_api.py       # AI接口封装
-    └── model_manager.py # AI模型管理
+    └── ai_api.py       # AI接口封装
 ```
 
 ## 数据库设计
