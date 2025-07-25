@@ -369,20 +369,22 @@
                             <label for="simulationSelect" class="form-label">选择攻击模拟</label>
                             <select class="form-select" id="simulationSelect">
                                 <option value="" selected disabled>-- 选择攻击模拟 --</option>
-                                {% for sim in simulations %}
-                                <option value="{{ sim.id }}">{{ sim.attack_type }} - {{
-                                    sim.created_at.strftime('%Y-%m-%d %H:%M') }}</option>
-                                {% endfor %}
+                                <option value="1">APT攻击链模拟</option>
+                                <option value="2">社会工程学攻击</option>
+                                <option value="3">Web应用攻击</option>
+                                <option value="4">网络渗透测试</option>
+                                <option value="5">恶意软件分析</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="defenseSelect" class="form-label">选择防御策略</label>
                             <select class="form-select" id="defenseSelect">
                                 <option value="" selected disabled>-- 选择防御策略 --</option>
-                                {% for defense in defense_strategies %}
-                                <option value="{{ defense.id }}">{{ defense.defense_level }} - {{
-                                    defense.created_at.strftime('%Y-%m-%d %H:%M') }}</option>
-                                {% endfor %}
+                                <option value="1">高级防御策略</option>
+                                <option value="2">基础防御策略</option>
+                                <option value="3">网络边界防护</option>
+                                <option value="4">终端安全防护</option>
+                                <option value="5">应急响应方案</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -726,21 +728,22 @@
 
             showResult('正在生成攻防演练评估报告，请稍候...');
 
-            // 这里应该调用后端API生成评估报告
-            // 暂时使用evaluate_user API
-            fetch('/api/evaluate_user/' + 1, {  // 使用ID为1的用户作为示例
+            // 调用攻防演练评估API
+            fetch('/api/evaluate_attack_defense', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    simulation_id: simulationId,
+                    defense_id: defenseId,
                     model_option: modelOption
                 })
             })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showResult(data.evaluation.evaluation_report);
+                        showResult(data.evaluation_report);
                     } else {
                         showResult('生成评估报告失败: ' + data.message);
                     }

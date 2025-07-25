@@ -1139,6 +1139,168 @@ def ai_arena():
     
     return render_template('ai_arena.html', challenges=challenges)
 
+@app.route('/api/simulate_apt_attack', methods=['POST'])
+@login_required
+def api_simulate_apt_attack():
+    """APT攻击链模拟"""
+    data = request.get_json()
+    target_info = data.get('target_info', '')
+    attack_phases = data.get('attack_phases', [])
+    model_option = data.get('model_option', 'Qwen3.0-Local')
+    
+    if not target_info:
+        return jsonify({'success': False, 'message': '请提供目标系统信息'})
+    
+    try:
+        # 构建攻击链模拟提示
+        prompt = f"""
+        作为一个网络安全专家，请模拟针对以下目标系统的APT攻击链：
+        
+        目标系统信息：
+        {target_info}
+        
+        攻击阶段：
+        {', '.join(attack_phases)}
+        
+        请详细描述每个攻击阶段的具体步骤、使用的技术和工具。
+        """
+        
+        messages = [{"role": "user", "content": prompt}]
+        result = ctf_ai.get_model_request(messages, model_option=model_option)
+        
+        return jsonify({
+            'success': True,
+            'simulation': {
+                'result': result,
+                'attack_phases': attack_phases,
+                'target_info': target_info
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/simulate_social_engineering', methods=['POST'])
+@login_required
+def api_simulate_social_engineering():
+    """社会工程学攻击模拟"""
+    data = request.get_json()
+    target_info = data.get('target_info', '')
+    attack_type = data.get('attack_type', '钓鱼邮件')
+    model_option = data.get('model_option', 'Qwen3.0-Local')
+    
+    if not target_info:
+        return jsonify({'success': False, 'message': '请提供目标信息'})
+    
+    try:
+        prompt = f"""
+        作为一个网络安全专家，请模拟以下社会工程学攻击场景：
+        
+        攻击类型：{attack_type}
+        目标信息：{target_info}
+        
+        请详细描述攻击过程、可能的成功率和防范措施。
+        注意：这是用于安全教育目的的模拟。
+        """
+        
+        messages = [{"role": "user", "content": prompt}]
+        result = ctf_ai.get_model_request(messages, model_option=model_option)
+        
+        return jsonify({
+            'success': True,
+            'simulation': {
+                'result': result,
+                'attack_type': attack_type,
+                'target_info': target_info
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/generate_adaptive_defense', methods=['POST'])
+@login_required
+def api_generate_adaptive_defense():
+    """生成自适应防御策略"""
+    data = request.get_json()
+    attack_data = data.get('attack_data', '')
+    system_config = data.get('system_config', '')
+    model_option = data.get('model_option', 'Qwen3.0-Local')
+    
+    if not attack_data:
+        return jsonify({'success': False, 'message': '请提供攻击数据'})
+    
+    try:
+        prompt = f"""
+        作为一个网络安全防御专家，请为以下攻击场景生成自适应防御策略：
+        
+        攻击数据：
+        {attack_data}
+        
+        系统配置：
+        {system_config}
+        
+        请提供：
+        1. 威胁分析
+        2. 具体的防御措施
+        3. 自适应响应策略
+        4. 预防类似攻击的建议
+        """
+        
+        messages = [{"role": "user", "content": prompt}]
+        result = ctf_ai.get_model_request(messages, model_option=model_option)
+        
+        return jsonify({
+            'success': True,
+            'defense': {
+                'content': result,
+                'attack_data': attack_data,
+                'system_config': system_config
+            }
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/api/evaluate_attack_defense', methods=['POST'])
+@login_required
+def api_evaluate_attack_defense():
+    """攻防演练评估"""
+    data = request.get_json()
+    simulation_id = data.get('simulation_id', '')
+    defense_id = data.get('defense_id', '')
+    model_option = data.get('model_option', 'Qwen3.0-Local')
+    
+    if not simulation_id or not defense_id:
+        return jsonify({'success': False, 'message': '请选择攻击模拟和防御策略'})
+    
+    try:
+        # 这里可以根据实际的模拟ID获取对应的数据
+        # 目前使用模拟数据
+        prompt = f"""
+        作为一个网络安全评估专家，请对以下攻防演练进行综合评估：
+        
+        攻击模拟ID：{simulation_id}
+        防御策略ID：{defense_id}
+        
+        请提供：
+        1. 攻击效果评估
+        2. 防御有效性分析
+        3. 安全态势评分
+        4. 改进建议
+        5. 总体评估报告
+        """
+        
+        messages = [{"role": "user", "content": prompt}]
+        result = ctf_ai.get_model_request(messages, model_option=model_option)
+        
+        return jsonify({
+            'success': True,
+            'evaluation_report': result,
+            'simulation_id': simulation_id,
+            'defense_id': defense_id
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+
 # 用户版AI仪表板
 @app.route('/ai_lab')
 @login_required
