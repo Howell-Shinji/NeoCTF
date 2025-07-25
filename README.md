@@ -1,9 +1,12 @@
 <div align="center">
   <h1>NeonCTF</h1>
-  <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
-</div>
 
-A modern Flask-based CTF (Capture The Flag) competition platform with neon night theme design and integrated AI security assistant functionality.
+  <p>
+    <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
+  </p>
+
+  <p>A modern Flask-based CTF (Capture The Flag) competition platform with neon night theme design and integrated AI security assistant functionality.</p>
+</div>
 
 <div align="center">
   <img src="https://img.shields.io/badge/Platform-CTF-blueviolet?style=for-the-badge" alt="CTF Platform">
