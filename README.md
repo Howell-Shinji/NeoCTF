@@ -2,22 +2,22 @@
    <img src="./background.JPG">
     
    <h1>
-    <img src="./logo.JPG" alt="Logo" width="35" height="35" style="vertical-align: center; margin-right: 10px;">NeonCTF
+      <img src="./logo.JPG" alt="Logo" width="35" height="35" style="vertical-align: center; margin-right: 10px;">NeonCTF
    </h1>
 
-  <p>
-    <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
-  </p>
+   <p>
+      <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
+   </p>
 
-  <p>A modern Flask-based CTF (Capture The Flag) competition platform with neon night theme design and integrated AI security assistant functionality.</p>
+   <p>A modern Flask-based CTF (Capture The Flag) competition platform with neon night theme design and integrated AI security assistant functionality.</p>
 </div>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Platform-CTF-blueviolet?style=for-the-badge" alt="CTF Platform">
-  <img src="https://img.shields.io/badge/Theme-Tokyo%20Night-7aa2f7?style=for-the-badge" alt="Tokyo Night">
-  <img src="https://img.shields.io/badge/Backend-Flask-green?style=for-the-badge" alt="Flask">
-  <img src="https://img.shields.io/badge/Database-MySQL-orange?style=for-the-badge" alt="MySQL">
-  <img src="https://img.shields.io/badge/Style-Neon%20Style-ff69b4?style=for-the-badge" alt="Neon Pixel Style">
+   <img src="https://img.shields.io/badge/Platform-CTF-blueviolet?style=for-the-badge" alt="CTF Platform">
+   <img src="https://img.shields.io/badge/Theme-Tokyo%20Night-7aa2f7?style=for-the-badge" alt="Tokyo Night">
+   <img src="https://img.shields.io/badge/Backend-Flask-green?style=for-the-badge" alt="Flask">
+   <img src="https://img.shields.io/badge/Database-MySQL-orange?style=for-the-badge" alt="MySQL">
+   <img src="https://img.shields.io/badge/Style-Neon%20Style-ff69b4?style=for-the-badge" alt="Neon Pixel Style">
 </div>
 
 ## Features
