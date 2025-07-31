@@ -6,7 +6,7 @@
    </h1>
 
    <p>
-      <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
+      <a href="./README_CN.md">中文</a>&nbsp<a>|</a>&nbsp<a href="./README.md">EN</a>
    </p>
 
    <p>A modern Flask-based CTF (Capture The Flag) competition platform with neon night theme design and integrated AI security assistant functionality.</p>

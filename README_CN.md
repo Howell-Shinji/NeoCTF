@@ -6,7 +6,7 @@
    </h1>
 
    <p>
-      <a href="./README_CN.md">中文</a>&nbsp<a href="./README.md">EN</a>
+      <a href="./README_CN.md">中文</a>&nbsp<a>|</a>&nbsp<a href="./README.md">EN</a>
    </p>
 
    <p>一个基于Flask的现代化CTF（Capture The Flag）竞赛平台，采用了霓虹夜主题的界面设计，集成了AI安全助手功能。</p>
